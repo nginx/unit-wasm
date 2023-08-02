@@ -1,0 +1,87 @@
+{
+    "listeners": {
+        "[::1]:8888": {
+            "pass": "routes"
+        }
+    },
+
+    "settings": {
+        "http": {
+            "max_body_size": 1073741824
+        }
+    },
+
+    "routes": [
+        {
+            "match": {
+                "uri": "/echo*"
+            },
+            "action": {
+                "pass": "applications/luw-echo-request"
+            }
+        },
+        {
+            "match": {
+                "uri": "/upload*"
+            },
+            "action": {
+                "pass": "applications/luw-upload-reflector"
+            }
+        },
+        {
+            "match": {
+                "uri": "/rust-echo*"
+            },
+            "action": {
+                "pass": "applications/rust-echo-test"
+            }
+        },
+        {
+            "match": {
+                "uri": "/rust-upload*"
+            },
+            "action": {
+                "pass": "applications/rust-upload-reflector"
+            }
+        }
+    ],
+
+    "applications": {
+        "luw-echo-request": {
+            "type": "wasm",
+            "module": "/path/to/unit-wasm/examples/c/luw-echo-request.wasm",
+            "request_handler": "luw_request_handler",
+            "malloc_handler": "luw_malloc_handler",
+            "free_handler": "luw_free_handler",
+            "module_init_handler": "luw_module_init_handler",
+            "module_end_handler": "luw_module_end_handler"
+        },
+        "luw-upload-reflector": {
+            "type": "wasm",
+            "module": "/path/to/unit-wasm/examples/c/luw-upload-reflector.wasm",
+            "request_handler": "luw_request_handler",
+            "malloc_handler": "luw_malloc_handler",
+            "free_handler": "luw_free_handler",
+            "request_end_handler": "luw_request_end_handler",
+            "response_end_handler": "luw_response_end_handler"
+        },
+        "rust-echo-test": {
+            "type": "wasm",
+            "module": "/path/to/unit-wasm/examples/rust/echo-request/target/wasm32-wasi/debug/rust_echo_test.wasm",
+            "request_handler": "luw_request_handler",
+            "malloc_handler": "luw_malloc_handler",
+            "free_handler": "luw_free_handler",
+            "module_init_handler": "luw_module_init_handler",
+            "module_end_handler": "luw_module_end_handler"
+        },
+        "rust-upload-reflector": {
+            "type": "wasm",
+            "module": "/path/to/unit-wasm/examples/rust/upload-reflector/rust_upload_reflector.wasm",
+            "request_handler": "luw_request_handler",
+            "malloc_handler": "luw_malloc_handler",
+            "free_handler": "luw_free_handler",
+            "request_end_handler": "luw_request_end_handler",
+            "response_end_handler": "luw_response_end_handler"
+        }
+    }
+}

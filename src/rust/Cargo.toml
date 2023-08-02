@@ -1,0 +1,15 @@
+[package]
+name = "unit-wasm"
+version = "0.1.0"
+authors = ["Timo Stark <t.stark@f5.com>", "Andrew Clayton <a.clayton@f5.com>"]
+description = "WASM SDK for NGINX Unit"
+license = "Apache-2.0"
+keywords = ["nginx", "unit", "wasm", "wasi"]
+
+[lib]
+crate-type = ["rlib"]
+path = "src/lib.rs"
+
+
+[dependencies]
+unit-wasm-sys = { path = "unit-wasm-sys", version = "0.1.1" }

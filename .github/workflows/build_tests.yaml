@@ -1,0 +1,41 @@
+name: Builds
+
+on:
+  push:
+    branches: preview
+    paths:
+      - Makefile
+      - 'examples/**'
+      - 'src/**'
+      - '.github/workflows/build_tests.yaml'
+  pull_request:
+    branches: preview
+    paths:
+      - Makefile
+      - 'examples/**'
+      - 'src/**'
+      - '.github/workflows/build_tests.yaml'
+
+jobs:
+  # GitHub Currently only supports running directly on Ubuntu,
+  # for any other Linux we need to use a container.
+
+  fedora-rawhide:
+    runs-on: ubuntu-latest
+
+    container:
+      image: fedora:rawhide
+
+    steps:
+      - name: Install tools/deps
+        run: |
+          dnf -y install git wget clang llvm compiler-rt lld make bindgen-cli cargo rust rust-std-static-wasm32-unknown-unknown rust-std-static-wasm32-wasi
+          wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/libclang_rt.builtins-wasm32-wasi-20.0.tar.gz | tar --strip-components=1 -xvzf - -C $(dirname $(rpm -ql compiler-rt | grep lib/libclang_rt.builtins-x86_64.a))
+          wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/wasi-sysroot-20.0.tar.gz | tar -xvzf - -C ${RUNNER_TEMP}
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: "0"
+
+      - name: make
+        run: make WASI_SYSROOT=${RUNNER_TEMP}/wasi-sysroot V=1 E=1 all
