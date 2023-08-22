@@ -39,30 +39,21 @@ support and the C examples.
 
 2) Create a new rust project
 
-```
+```shell
 $ cargo init --lib my-wasm-example
 ```
 
 3) Add the [unit-wasm crate](https://crates.io/crates/unit-wasm) as dependency
 
-```
+```shell
 $ cd my-wasm-example
 $ cargo add unit-wasm
 ```
 
-4) Create the following _Cargo.toml_ file
+4) Set the crate type
 
-```
-[package]
-name = "my-wasm-example"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-unit-wasm = { version = "0.1.0" }
-
-[lib]
-crate-type = ["cdylib"]
+```shell
+$ printf '\n[lib]\ncrate-type = ["cdylib"]\n' >>Cargo.toml
 ```
 
 5) Create an example application
@@ -70,22 +61,30 @@ crate-type = ["cdylib"]
 To do this you can simply take a copy of our echo-request demo in this
 repository
 
-```
+```shell
 $ wget -O src/lib.rs https://raw.githubusercontent.com/nginx/unit-wasm/master/examples/rust/echo-request/src/lib.rs
 ```
 
-6) Built it!
+6) Build it!
 
-```
+```shell
 $ cargo build --target wasm32-wasi
 ```
 
 You should now have a *target/wasm32-wasi/debug/my_wasm_example.wasm* file
 (yes, hyphens will be turned to underscores)
 
-You can now use this in Unit with the following application config snippet
+You can now use this in Unit with the following config
 
 ```JSON
+{
+    "listeners": {
+        "[::1]:8888": {
+            "pass": "applications/my-wasm-example"
+        }
+    },
+
+    "applications": {
         "my-wasm-example": {
             "type": "wasm",
             "module": "/path/to/my-wasm-example/target/wasm32-wasi/debug/my_wasm_example.wasm",
@@ -94,7 +93,15 @@ You can now use this in Unit with the following application config snippet
             "free_handler": "luw_free_handler",
             "module_init_handler": "luw_module_init_handler",
             "module_end_handler": "luw_module_end_handler"
-        },
+        }
+    }
+}
+```
+
+and curl command
+
+```shell
+$ curl http://localhost:8888/
 ```
 
 7) Enjoy!
@@ -179,8 +186,8 @@ Try the make command again...
 
 ### Building the Rust libunit-wasm Crate and Examples
 
-To build the rust stuff you will of course need rust and also cargo and the
-rust wasm/wasi stuff. On Fedora this is the relevant packages I have installed
+To build with Rust you will of course need rust and also cargo and the
+rust Wasm/WASI components. For example, the Fedora packages are:
 
 ```
 cargo
@@ -318,7 +325,7 @@ Create the following Unit config
 
 Load this config then you should be ready to try it.
 
-```shell
+```
 $ curl -X POST -d "Hello World" --cookie "mycookie=hmmm" http://localhost:8888/echo/?q=a
  *** Welcome to WebAssembly on Unit! [libunit-wasm (0.1.0/0x00010000)] ***
 
@@ -344,7 +351,7 @@ Content-Type = application/x-www-form-urlencoded
 Hello World
 ```
 
-```shell
+```
 $ curl -v -X POST --data-binary @audio.flac -H "Content-Type: audio/flac" http://localhost:8888/upload-reflector/ -o wasm-test.dat
 ...
 > Content-Type: audio/flac
@@ -377,7 +384,7 @@ Include the libunit-wasm header file
 
 Link against libunit-wasm
 
-```
+```shell
 $ clang ... -o myapp.wasm myapp.c -lunit-wasm
 ```
 
