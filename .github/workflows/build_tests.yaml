@@ -2,7 +2,7 @@ name: Builds
 
 on:
   push:
-    branches: master
+    branches: main
     paths:
       - Makefile
       - shared.mk
@@ -10,7 +10,7 @@ on:
       - 'src/**'
       - '.github/workflows/build_tests.yaml'
   pull_request:
-    branches: master
+    branches: main
     paths:
       - Makefile
       - shared.mk

@@ -500,8 +500,8 @@ int luw_request_handler(u8 *addr)
 }
 ```
 
-That example is taken from the [luw-upload-reflector.c](https://github.com/nginx/unit-wasm/blob/master/examples/c/luw-upload-reflector.c) demo module. For a
-simpler example see [luw-echo-request.c](https://github.com/nginx/unit-wasm/blob/master/examples/c/luw-echo-request.c)
+That example is taken from the [luw-upload-reflector.c](https://github.com/nginx/unit-wasm/blob/main/examples/c/luw-upload-reflector.c) demo module. For a
+simpler example see [luw-echo-request.c](https://github.com/nginx/unit-wasm/blob/main/examples/c/luw-echo-request.c)
 
 ### luw_get_http_path
 
@@ -812,7 +812,7 @@ total_response_sent += write_bytes;
 /* ... */
 ```
 
-This is taken from the [luw-upload-reflector.c](https://github.com/nginx/unit-wasm/blob/master/examples/c/luw-upload-reflector.c) demo module.
+This is taken from the [luw-upload-reflector.c](https://github.com/nginx/unit-wasm/blob/main/examples/c/luw-upload-reflector.c) demo module.
 
 In this case we build up a request_buffer on each call of
 luw_request_handler(), so total_response_sent grows each time by how much data

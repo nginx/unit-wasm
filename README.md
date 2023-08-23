@@ -62,7 +62,7 @@ To do this you can simply take a copy of our echo-request demo in this
 repository
 
 ```shell
-$ wget -O src/lib.rs https://raw.githubusercontent.com/nginx/unit-wasm/master/examples/rust/echo-request/src/lib.rs
+$ wget -O src/lib.rs https://raw.githubusercontent.com/nginx/unit-wasm/main/examples/rust/echo-request/src/lib.rs
 ```
 
 6) Build it!
@@ -227,7 +227,7 @@ examples/rust/upload-reflector/target/wasm32-wasi/debug/rust_upload_reflector.wa
 ```
 
 We won't go into the details of building Unit from source and enabling the
-Unit WebAssembly language module here (see the [HOWTO.md](https://github.com/nginx/unit-wasm/blob/master/HOWTO.md) in the repository root for more details) but will
+Unit WebAssembly language module here (see the [HOWTO.md](https://github.com/nginx/unit-wasm/blob/main/HOWTO.md) in the repository root for more details) but will
 instead assume you already have a Unit with the WebAssembly language module
 already running.
 
@@ -388,7 +388,7 @@ Link against libunit-wasm
 $ clang ... -o myapp.wasm myapp.c -lunit-wasm
 ```
 
-See [API-C.md](https://github.com/nginx/unit-wasm/blob/master/API-C.md) for an
+See [API-C.md](https://github.com/nginx/unit-wasm/blob/main/API-C.md) for an
 overview of the API.
 
 ## License
