@@ -6,126 +6,99 @@
  * Copyright (C) F5, Inc.
  */
 
-// Include RAW FFI Bindings.
-// @todo: Replace this with the new native Rust API
-use unit_wasm::ffi::*;
+use unit_wasm::rusty::*;
 
-use std::os::raw::c_char;
-use std::os::raw::c_void;
-use std::ptr;
+use std::ptr::null_mut;
 
-static mut CTX: luw_ctx_t = luw_ctx_t {
-    addr: ptr::null_mut(),
-    mem: ptr::null_mut(),
-    req: ptr::null_mut(),
-    resp: ptr::null_mut(),
-    resp_hdr: ptr::null_mut(),
-    resp_offset: 0,
-    req_buf: ptr::null_mut(),
-    hdrp: ptr::null_mut(),
-    reqp: ptr::null_mut(),
-};
+static mut CTX: luw_ctx_t = UWR_CTX_INITIALIZER();
 
 static mut TOTAL_RESPONSE_SENT: usize = 0;
 
 // Buffer of some size to store the copy of the request
-static mut REQUEST_BUF: *mut u8 = ptr::null_mut();
+static mut REQUEST_BUF: *mut u8 = null_mut();
 
 #[no_mangle]
-pub extern "C" fn luw_response_end_handler() {
+pub extern "C" fn uwr_response_end_handler() {
     unsafe {
         TOTAL_RESPONSE_SENT = 0;
     }
 }
 
 #[no_mangle]
-pub extern "C" fn luw_request_end_handler() {
+pub extern "C" fn uwr_request_end_handler() {
     unsafe {
         if REQUEST_BUF.is_null() {
             return;
         }
 
-        luw_free(REQUEST_BUF as *mut c_void);
-        REQUEST_BUF = ptr::null_mut();
+        uwr_free(REQUEST_BUF);
+        REQUEST_BUF = null_mut();
     }
 }
 
 pub fn upload_reflector(ctx: *mut luw_ctx_t) -> i32 {
     let write_bytes: usize;
 
+    // Send headers
+    if unsafe { TOTAL_RESPONSE_SENT == 0 } {
+        let defct = "application/octet-stream";
+        let mut ct = uwr_http_hdr_get_value(ctx, "Content-Type");
+
+        if ct.is_empty() {
+            ct = defct;
+        }
+
+        uwr_http_init_headers(ctx, 2, 0);
+        uwr_http_add_header(ctx, 0, "Content-Type", ct);
+        uwr_http_add_header(
+            ctx,
+            1,
+            "Content-Length",
+            &format!("{}", uwr_get_http_content_len(ctx)),
+        );
+        uwr_http_send_headers(ctx);
+    }
+
     unsafe {
-        // Send headers
-        if TOTAL_RESPONSE_SENT == 0 {
-            let content_len = format!("{}\0", luw_get_http_content_len(ctx));
-            let defct = "application/octet-stream\0".as_ptr() as *const c_char;
-            let mut ct = luw_http_hdr_get_value(
-                ctx,
-                "Content-Type\0".as_ptr() as *const c_char,
-            );
-
-            if ct == ptr::null_mut() {
-                ct = defct;
-            }
-
-            luw_http_init_headers(ctx, 2, 0);
-            luw_http_add_header(
-                ctx,
-                0,
-                "Content-Type\0".as_ptr() as *const c_char,
-                ct,
-            );
-            luw_http_add_header(
-                ctx,
-                1,
-                "Content-Length\0".as_ptr() as *const c_char,
-                content_len.as_ptr() as *const c_char,
-            );
-            luw_http_send_headers(ctx);
-        }
-
-        write_bytes = luw_mem_fill_buf_from_req(ctx, TOTAL_RESPONSE_SENT);
+        write_bytes = uwr_mem_fill_buf_from_req(ctx, TOTAL_RESPONSE_SENT);
         TOTAL_RESPONSE_SENT += write_bytes;
+    }
 
-        luw_http_send_response(ctx);
+    uwr_http_send_response(ctx);
 
-        if TOTAL_RESPONSE_SENT == luw_get_http_content_len(ctx) {
-            // Tell Unit no more data to send
-            luw_http_response_end();
-        }
+    if unsafe { TOTAL_RESPONSE_SENT == uwr_get_http_content_len(ctx) } {
+        // Tell Unit no more data to send
+        uwr_http_response_end();
     }
 
     return 0;
 }
 
 #[no_mangle]
-pub extern "C" fn luw_request_handler(addr: *mut u8) -> i32 {
-    unsafe {
-        let ctx: *mut luw_ctx_t = &mut CTX;
+pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
+    let ctx: *mut luw_ctx_t = unsafe { &mut CTX };
 
-        if REQUEST_BUF.is_null() {
-            luw_init_ctx(ctx, addr, 0 /* Response offset */);
-            /*
-             * Take a copy of the request and use that, we do this
-             * in APPEND mode so we can build up request_buf from
-             * multiple requests.
-             *
-             * Just allocate memory for the total amount of data we
-             * expect to get, this includes the request structure
-             * itself as well as any body content.
-             */
-            luw_set_req_buf(
-                ctx,
-                &mut REQUEST_BUF,
-                luw_srb_flags_t_LUW_SRB_APPEND
-                    | luw_srb_flags_t_LUW_SRB_ALLOC
-                    | luw_srb_flags_t_LUW_SRB_FULL_SIZE,
-            );
-        } else {
-            luw_req_buf_append(ctx, addr);
-        }
-
-        upload_reflector(ctx);
+    if unsafe { REQUEST_BUF.is_null() } {
+        uwr_init_ctx(ctx, addr, 0 /* Response offset */);
+        /*
+         * Take a copy of the request and use that, we do this
+         * in APPEND mode so we can build up request_buf from
+         * multiple requests.
+         *
+         * Just allocate memory for the total amount of data we
+         * expect to get, this includes the request structure
+         * itself as well as any body content.
+         */
+        uwr_set_req_buf(
+            ctx,
+            unsafe { &mut REQUEST_BUF },
+            LUW_SRB_APPEND | LUW_SRB_ALLOC | LUW_SRB_FULL_SIZE,
+        );
+    } else {
+        uwr_req_buf_append(ctx, addr);
     }
+
+    upload_reflector(ctx);
 
     return 0;
 }
