@@ -88,11 +88,11 @@ You can now use this in Unit with the following config
         "my-wasm-example": {
             "type": "wasm",
             "module": "/path/to/my-wasm-example/target/wasm32-wasi/debug/my_wasm_example.wasm",
-            "request_handler": "luw_request_handler",
+            "request_handler": "uwr_request_handler",
             "malloc_handler": "luw_malloc_handler",
             "free_handler": "luw_free_handler",
-            "module_init_handler": "luw_module_init_handler",
-            "module_end_handler": "luw_module_end_handler"
+            "module_init_handler": "uwr_module_init_handler",
+            "module_end_handler": "uwr_module_end_handler"
         }
     }
 }
@@ -304,20 +304,20 @@ Create the following Unit config
         "rust-echo-request": {
             "type": "wasm",
             "module": "/path/to/unit-wasm/examples/rust/echo-request/target/wasm32-wasi/debug/rust_echo_request.wasm",
-            "request_handler": "luw_request_handler",
+            "request_handler": "uwr_request_handler",
             "malloc_handler": "luw_malloc_handler",
             "free_handler": "luw_free_handler",
-            "module_init_handler": "luw_module_init_handler",
-            "module_end_handler": "luw_module_end_handler"
+            "module_init_handler": "uwr_module_init_handler",
+            "module_end_handler": "uwr_module_end_handler"
         },
         "rust-upload-reflector": {
             "type": "wasm",
             "module": "/path/to/unit-wasm/examples/rust/upload-reflector/rust_upload_reflector.wasm",
-            "request_handler": "luw_request_handler",
+            "request_handler": "uwr_request_handler",
             "malloc_handler": "luw_malloc_handler",
             "free_handler": "luw_free_handler",
-            "request_end_handler": "luw_request_end_handler",
-            "response_end_handler": "luw_response_end_handler"
+            "request_end_handler": "uwr_request_end_handler",
+            "response_end_handler": "uwr_response_end_handler"
         }
     }
 }
