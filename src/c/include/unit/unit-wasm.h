@@ -126,9 +126,10 @@ typedef enum {
 	LUW_SRB_APPEND = 0x01,
 	LUW_SRB_ALLOC = 0x02,
 	LUW_SRB_FULL_SIZE = 0x04,
+
+	LUW_SRB_FLAGS_ALL = (LUW_SRB_NONE|LUW_SRB_APPEND|LUW_SRB_ALLOC|
+			     LUW_SRB_FULL_SIZE)
 } luw_srb_flags_t;
-#define LUW_SRB_FLAGS_ALL \
-	(LUW_SRB_NONE|LUW_SRB_APPEND|LUW_SRB_ALLOC|LUW_SRB_FULL_SIZE)
 
 typedef struct luw_hdr_field luw_http_hdr_iter_t;
 
