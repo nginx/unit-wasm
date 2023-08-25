@@ -269,7 +269,7 @@ Create the following Unit config
                 "uri": "/rust-echo*"
             },
             "action": {
-                "pass": "applications/rust-echo-test"
+                "pass": "applications/rust-echo-request"
             }
         },
         {
@@ -301,9 +301,9 @@ Create the following Unit config
             "request_end_handler": "luw_request_end_handler",
             "response_end_handler": "luw_response_end_handler"
         },
-        "rust-echo-test": {
+        "rust-echo-request": {
             "type": "wasm",
-            "module": "/path/to/unit-wasm/examples/rust/echo-request/target/wasm32-wasi/debug/rust_echo_test.wasm",
+            "module": "/path/to/unit-wasm/examples/rust/echo-request/target/wasm32-wasi/debug/rust_echo_request.wasm",
             "request_handler": "luw_request_handler",
             "malloc_handler": "luw_malloc_handler",
             "free_handler": "luw_free_handler",
