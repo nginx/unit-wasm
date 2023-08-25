@@ -12,4 +12,4 @@ path = "src/lib.rs"
 
 
 [dependencies]
-unit-wasm-sys = { path = "unit-wasm-sys", version = "0.1.1" }
+unit-wasm-sys = { path = "unit-wasm-sys", version = "0.1.2" }
