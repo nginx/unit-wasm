@@ -31,7 +31,8 @@ fn main() {
 }
 
 fn generate_bindings() {
-    let wasi_sysroot = "--sysroot=".to_owned() + &env::var("WASI_SYSROOT").unwrap();
+    let wasi_sysroot =
+        "--sysroot=".to_owned() + &env::var("WASI_SYSROOT").unwrap();
     let bindings = bindgen::Builder::default()
         // The input header file.
         .header("libunit-wasm/include/unit/unit-wasm.h")
@@ -42,8 +43,8 @@ fn generate_bindings() {
         .generate()
         .expect("Unable to generate bindings");
 
-    let out_dir_env =
-        env::var("OUT_DIR").expect("The required environment variable OUT_DIR was not set");
+    let out_dir_env = env::var("OUT_DIR")
+        .expect("The required environment variable OUT_DIR was not set");
     let out_path = PathBuf::from(out_dir_env);
 
     bindings
