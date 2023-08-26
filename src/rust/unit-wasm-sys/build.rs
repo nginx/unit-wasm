@@ -11,7 +11,6 @@ fn main() {
 
     // Some generics
     println!("cargo:rerun-if-changed=build.rs");
-    println!("cargo:rerun-if-changed=wrapper.h");
 
     // The rustc-link-search tells Cargo to pass the `-L` flag to the
     // compiler to add a directory to the library search plugin. The
