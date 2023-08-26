@@ -30,15 +30,12 @@ fn main() {
 }
 
 fn generate_bindings() {
-    let wasi_sysroot =
-        "--sysroot=".to_owned() + &env::var("WASI_SYSROOT").unwrap();
     let bindings = bindgen::Builder::default()
         // The input header file.
         .header("libunit-wasm/include/unit/unit-wasm.h")
         .allowlist_function("^luw_.*")
         .allowlist_var("^luw_.*")
         .allowlist_type("^luw_.*")
-        .clang_args(vec![wasi_sysroot]) // Needed for strings.h
         .generate()
         .expect("Unable to generate bindings");
 
