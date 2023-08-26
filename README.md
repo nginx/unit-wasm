@@ -1,22 +1,20 @@
 # C & Rust Library & Examples for Building WebAssembly Modules for NGINX Unit
 
-This provides a C library (lbunit-wasm) and a Rust crate based on that library
+This provides a C library (lbunit-wasm) and Rust crates based on that library
 to aid in the creation of WebAssembly modules in C and Rust.
 
 It also has some demo WebAssembly modules written in C and Rust.
 
 1. [C & Rust Library & Examples for Building WebAssembly Modules for NGINX Unit](#c---rust-library---examples-for-building-webassembly-modules-for-nginx-unit)
 2. [Repository Layout](#repository-layout)
-3. [Quickstart in Developing Rust WebAssembly Modules for Unit](#quickstart-in-developing-rust-webassembly-modules-for-unit)
-4. [Getting Started](#getting-started)
-    1. [Requirements](#requirements)
-        * [wasi-sysroot](#wasi-sysroot)
-        * [libclang_rt.builtins-wasm32-wasi](#libclang_rtbuiltins-wasm32-wasi)
-    2. [Building libunit-wasm and C Examples](#building-libunit-wasm-and-c-examples)
-    3. [Building the Rust libunit-wasm Crate and Examples](#building-the-rust-libunit-wasm-crate-and-examples)
-    4. [Using With Unit](#using-with-unit)
-5. [Consuming the C Library](#consuming-the-c-library)
-6. [License](#license)
+3. [Setup a Suitable Environment](#setup-a-suitable-environment)
+    1. [Fedora](#fedora)
+    2. [Debian / Ubuntu](#debian--ubuntu)
+4. [Quickstart in Developing Rust WebAssembly Modules for Unit](#quickstart-in-developing-rust-webassembly-modules-for-unit)
+5. [Working With the Repository](#working-with-the-repository)
+6. [Using With Unit](#using-with-unit)
+7. [Consuming the C Library](#consuming-the-c-library)
+8. [License](#license)
 
 ## Repository Layout
 
@@ -32,10 +30,81 @@ interface to Unit (\*-raw.c) and also the use of libunit-wasm (luw-\*.c).
 **examples/docker** contains docker files for building Unit with WebAssembly
 support and the C examples.
 
+## Setup a Suitable Environment
+
+To make full use of this repository you will require numerous tools/packages.
+
+Exactly what you need and how to get it will depend on your Operating System.
+
+This has been primarily developed and tested on Fedora & Ubuntu Linux.
+
+### Fedora
+
+On Fedora make sure you have the following installed
+
+```
+# dnf install make clang llvm compiler-rt lld wasi-libc-devel \
+              wasi-libc-static cargo rust rustfmt rust-std-static \
+              rust-std-static-wasm32-unknown-unknown \
+              rust-std-static-wasm32-wasi
+```
+
+One last item you will need is the libclang wasm32-wasi runtime library, this
+can be done with
+
+```
+# wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/libclang_rt.builtins-wasm32-wasi-20.0.tar.gz | tar --strip-components=1 -xvzf - -C $(dirname $(clang -print-runtime-dir))
+```
+
+This will install the following, path may vary slightly
+
+```
+/usr/lib64/clang/16/lib/wasi/libclang_rt.builtins-wasm32.a
+```
+
+The above should also work (perhaps with slight alterations) on recent
+CentOS/RHEL etc...
+
+**NOTE:** If you get a major Clang version update, you may need to repeat
+that last task.
+
+### Debian / Ubuntu
+
+Install the following as normal
+
+```
+# apt install make clang llvm lld
+```
+
+For the rest you will likely need to use [rustup](https://rustup.rs). Caveat
+Emptor.
+
+After you've completed the _rustup_ installation by following the on screen
+instructions as yourself (defaults are fine), do the following
+
+```shell
+$ rustup target add wasm32-wasi
+```
+
+You will also need to grab the wasi-sysroot, this is essentially a C library
+targeting WebAssembly (it is based partly on cloudlibc and musl libc) and
+is required for building server side WebAssembly modules.
+
+It's up to you where you put this.
+
+```shell
+$ wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/wasi-sysroot-20.0.tar.gz | tar -xzf -
+```
+
+And finally similarly as Fedora (this requires a recentish clang)
+
+```
+# wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/libclang_rt.builtins-wasm32-wasi-20.0.tar.gz | tar --strip-components=1 -xvzf - -C $(dirname $(clang -print-runtime-dir))
+```
+
 ## Quickstart in Developing Rust WebAssembly Modules for Unit
 
-1) Have a suitable rust/wasm environment setup, See
-[Building the Rust libunit-wasm Crate and Examples](#building-the-rust-libunit-wasm-crate-and-examples) for some details
+1) Setup a suitable build environment as above.
 
 2) Create a new rust project
 
@@ -106,130 +175,87 @@ $ curl http://localhost:8888/
 
 7) Enjoy!
 
-## Getting Started
+## Working With the Repository
 
-### Requirements
+The project uses good old _make(1)_ as the build system.
 
-To build the C library and demo modules you will need make, clang, llvm,
-compiler-rt & lld 8.0+. (GCC does not currently have any support for
-WebAssembly).
-
-#### wasi-sysroot
-
-This is essentially a C library (based at least partly on cloudlibc and musl
-libc) for WebAssembly and is required for the _wasm32-wasi_ target.
-
-Distributions are starting to package this. On Fedora for example you can
-install the
+Typing _make help_ will show the list of available targets and the various
+make variables you can set. E.g
 
 ```
-wasi-libc-devel
-wasi-libc-static
+$ make help
+Available Targets:
+  default /
+  libunit-wasm   - Builds libunit-wasm C library
+  examples       - Builds the above as well as C examples
+  examples-raw   - Builds raw (non libunit-wasm) C examples
+  rust           - Builds the libunit-wasm rust crate
+  examples-rust  _ Builds the above and rust examples
+  all            - Builds all the above
+  docker         - Builds demo docker images
+  clean          - Removes auto generated artifacts
+  tags           - Generate ctags
+
+Variables:
+  make CC=            - Specify compiler to use
+                        Defaults to clang
+  make WASI_SYSROOT=  - Specify the path to the WASI sysroot
+                        Defaults to autodetected
+  make V=1            - Enables verbose output
+  make D=1            - Enables debug builds (-O0)
+  make E=1            - Enables Werror
 ```
 
-packages.
+If you have previously followed the steps outlined above in
+[Setup a Suitable Environment](#setup-a-suitable-environment)
 
-On FreeBSD you can install the
+You can build the libunit-wasm C library, C example Wasm modules, the Rust
+crates that provides Rust bindings for the libunit-wasm and the Rust example
+Wasm modules.
 
-```
-wasi-libc
-```
+E.g
 
-package.
-
-The Makefiles will pick this up automatically.
-
-Where _wasi-sysroot_ is not available you can grab it from
-[here](https://github.com/WebAssembly/wasi-sdk/releases). Just grab the latest
-wasi-sysroot-VERSION.tar.gz tarball.
-
-Untar the wasi-sysroot package someplace.
-
-#### libclang_rt.builtins-wasm32-wasi
-
-You will probably also need to grab the latest
-libclang\_rt.builtins-wasm32-wasi-VERSION.tar.gz tarball from the same
-location and keep it handy.
-
-### Building libunit-wasm and C Examples
-
-Once you have the above sorted you can simply try doing
-
-```
-$ make WASI_SYSROOT=/path/to/wasi-sysroot examples
+```shell
+$ make                  # Build just the C library
+$ make examples         # Build the C library and C examples
+$ make rust             # Build the Rust crates
+$ make examples-rust    # Build the Rust examples
+$ make all              # Build all the above
 ```
 
-**NOTE:**
-
-The Makefiles will look for an already installed wasi-sysroot on Fedora &
-FreeBSD, so you may not need to specify it as above.
-
-If you do, you can set the WASI\_SYSROOT environment variable in your shell so
-you don't need to specify it here.
-
-This will attempt to build libunit-wasm and the two example WebAssembly
-modules, _luw-echo-request.wasm_ & _luw-upload-reflector.wasm_.
-
-If the above fails (which currently there is a good chance it will) with an
-error message like
-
-```
-wasm-ld: error: cannot open /usr/lib64/clang/16/lib/wasi/libclang_rt.builtins-wasm32.a: No such file or directory
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
-```
-
-Then this is where that other tarball you downloaded comes in. Extract the
-*libclang\_rt.builtins-wasm32.a* from it and copy it into the location
-mentioned in the above error message.
-
-Try the make command again...
-
-### Building the Rust libunit-wasm Crate and Examples
-
-To build with Rust you will of course need rust and also cargo and the
-rust Wasm/WASI components. For example, the Fedora packages are:
-
-```
-cargo
-rust
-rust-std-static
-rust-std-static-wasm32-unknown-unknown
-rust-std-static-wasm32-wasi
-```
-
-Install with $PKGMGR.
-
-If you have also completed the above building of the C library and examples
-you should now be good to go.
-
-```
-$ make examples-rust
-```
-
-If you need to specify the *WASI_SYSROOT*, specify it in the make command as
-above.
-
-This will build the libunit-wasm rust crate and rust example modules.
-
-### Using With Unit
-
-Now that you have all the above built, you are now ready to test it out with
-Unit.
-
-If you created both the C and rust examples you will now have the following
-WebAssembly modules
+The C and Rust example Wasm modules will be located at
 
 ```
 examples/c/luw-echo-request.wasm
 examples/c/luw-upload-reflector.wasm
-examples/rust/echo-request/target/wasm32-wasi/debug/rust_echo_test.wasm
+examples/rust/echo-request/target/wasm32-wasi/debug/rust_echo_request.wasm
 examples/rust/upload-reflector/target/wasm32-wasi/debug/rust_upload_reflector.wasm
 ```
 
-We won't go into the details of building Unit from source and enabling the
-Unit WebAssembly language module here (see the [HOWTO.md](https://github.com/nginx/unit-wasm/blob/main/HOWTO.md) in the repository root for more details) but will
-instead assume you already have a Unit with the WebAssembly language module
-already running.
+**NOTE:** To build the C library and examples you will need to specify the
+wasi-sysroot.
+
+E.g
+
+```shell
+$ make WASI_SYSROOT=/path/to/wasi-sysroot all
+```
+
+**However** if you are on Fedora and installed the _wasi-*_ packages listed
+above in the [Setup a Suitable Environment](#fedora) then the wasi-sysroot
+path will be autodetected and set by the Makefile. You can override the
+autodetection by explicitly specifying it as above.
+
+## Using With Unit
+
+If you have all the above built, you are now ready to test it out with Unit.
+
+We won't go into the details of building Unit from source and enabling the Unit
+WebAssembly language module here (see the
+[HOWTO.md](https://github.com/nginx/unit-wasm/blob/main/HOWTO.md) in the
+repository root for more details) but will instead assume you already have a
+Unit with the WebAssembly language module already running, perhaps installed
+via a package.
 
 Create the following Unit config
 
