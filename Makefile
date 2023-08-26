@@ -67,7 +67,7 @@ help:
 	@echo "  make CC=            - Specify compiler to use"
 	@echo "                        Defaults to clang"
 	@echo "  make WASI_SYSROOT=  - Specify the path to the WASI sysroot"
-	@echo "                        Defaults to /usr/wasm32-wasi"
+	@echo "                        Defaults to autodetected"
 	@echo "  make V=1            - Enables verbose output"
 	@echo "  make D=1            - Enables debug builds (-O0)"
 	@echo "  make E=1            - Enables Werror"
