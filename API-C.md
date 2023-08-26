@@ -436,7 +436,7 @@ luw_init_ctx(&ctx, addr, 4096 /* Response offset */);
 ### luw_set_req_buf
 
 ```C
-int luw_set_req_buf(luw_ctx_t *ctx, u8 **buf, unsigned long flags);
+int luw_set_req_buf(luw_ctx_t *ctx, u8 **buf, unsigned int flags);
 ```
 
 This function is used to take a copy of the request buffer (as discussed

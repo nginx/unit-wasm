@@ -110,7 +110,7 @@ void luw_init_ctx(luw_ctx_t *ctx, u8 *addr, size_t offset)
  *			  allocate memory for the _entire_ request that
  *			  will eventually be sent.
  */
-int luw_set_req_buf(luw_ctx_t *ctx, u8 **buf, unsigned long flags)
+int luw_set_req_buf(luw_ctx_t *ctx, u8 **buf, unsigned int flags)
 {
 	size_t alloc_size;
 	size_t copy_bytes;

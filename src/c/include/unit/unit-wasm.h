@@ -161,7 +161,7 @@ extern u32 luw_malloc_handler(size_t size);
 #pragma GCC visibility push(default)
 
 extern void luw_init_ctx(luw_ctx_t *ctx, u8 *addr, size_t offset);
-extern int luw_set_req_buf(luw_ctx_t *ctx, u8 **buf, unsigned long flags);
+extern int luw_set_req_buf(luw_ctx_t *ctx, u8 **buf, unsigned int flags);
 extern const char *luw_get_http_path(const luw_ctx_t *ctx);
 extern const char *luw_get_http_method(const luw_ctx_t *ctx);
 extern const char *luw_get_http_version(const luw_ctx_t *ctx);
