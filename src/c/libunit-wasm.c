@@ -13,6 +13,7 @@
 #include <stdbool.h>
 #include <stdarg.h>
 #include <string.h>
+#include <strings.h>
 #include <errno.h>
 
 #include "unit/unit-wasm.h"
