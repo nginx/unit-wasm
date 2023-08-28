@@ -61,35 +61,35 @@ pub fn uwr_set_req_buf(
     unsafe { luw_set_req_buf(ctx, buf, flags) }
 }
 
-pub fn uwr_get_http_path(ctx: *mut luw_ctx_t) -> &'static str {
+pub fn uwr_get_http_path(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_path(ctx))
 }
 
-pub fn uwr_get_http_method(ctx: *mut luw_ctx_t) -> &'static str {
+pub fn uwr_get_http_method(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_method(ctx))
 }
 
-pub fn uwr_get_http_version(ctx: *mut luw_ctx_t) -> &'static str {
+pub fn uwr_get_http_version(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_version(ctx))
 }
 
-pub fn uwr_get_http_query(ctx: *mut luw_ctx_t) -> &'static str {
+pub fn uwr_get_http_query(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_query(ctx))
 }
 
-pub fn uwr_get_http_remote(ctx: *mut luw_ctx_t) -> &'static str {
+pub fn uwr_get_http_remote(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_remote(ctx))
 }
 
-pub fn uwr_get_http_local_addr(ctx: *mut luw_ctx_t) -> &'static str {
+pub fn uwr_get_http_local_addr(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_local_addr(ctx))
 }
 
-pub fn uwr_get_http_local_port(ctx: *mut luw_ctx_t) -> &'static str {
+pub fn uwr_get_http_local_port(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_local_port(ctx))
 }
 
-pub fn uwr_get_http_server_name(ctx: *mut luw_ctx_t) -> &'static str {
+pub fn uwr_get_http_server_name(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_server_name(ctx))
 }
 
