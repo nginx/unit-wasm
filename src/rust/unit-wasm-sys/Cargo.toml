@@ -1,6 +1,6 @@
 [package]
 name = "unit-wasm-sys"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 authors = ["Timo Stark <t.stark@nginx.com>", "Andrew Clayton <a.clayton@nginx.com>"]
 links = "unit-wasm"
