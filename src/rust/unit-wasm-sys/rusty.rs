@@ -124,7 +124,10 @@ pub fn uwr_http_hdr_iter(
     unsafe { luw_http_hdr_iter(ctx, luw_http_hdr_iter_func, user_data) }
 }
 
-pub fn uwr_http_hdr_get_value(ctx: *const luw_ctx_t, hdr: &str) -> &'static str {
+pub fn uwr_http_hdr_get_value(
+    ctx: *const luw_ctx_t,
+    hdr: &str,
+) -> &'static str {
     C2S!(luw_http_hdr_get_value(ctx, S2C!(hdr).as_ptr() as *const i8))
 }
 
@@ -172,11 +175,7 @@ pub fn uwr_http_init_headers(ctx: *mut luw_ctx_t, nr: usize, offset: usize) {
     }
 }
 
-pub fn uwr_http_add_header(
-    ctx: *mut luw_ctx_t,
-    name: &str,
-    value: &str,
-) {
+pub fn uwr_http_add_header(ctx: *mut luw_ctx_t, name: &str, value: &str) {
     unsafe {
         luw_http_add_header(
             ctx,
