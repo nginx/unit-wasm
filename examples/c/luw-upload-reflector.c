@@ -57,8 +57,8 @@ static int upload_reflector(luw_ctx_t *ctx)
 			 luw_get_http_content_len(ctx));
 
 		luw_http_init_headers(ctx, 2, 0);
-		luw_http_add_header(ctx, 0, "Content-Type", ct ? ct : defct);
-		luw_http_add_header(ctx, 1, "Content-Length", clen);
+		luw_http_add_header(ctx, "Content-Type", ct ? ct : defct);
+		luw_http_add_header(ctx, "Content-Length", clen);
 		luw_http_send_headers(ctx);
 	}
 

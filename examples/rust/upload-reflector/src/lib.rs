@@ -49,10 +49,9 @@ pub fn upload_reflector(ctx: *mut luw_ctx_t) -> i32 {
         }
 
         uwr_http_init_headers(ctx, 2, 0);
-        uwr_http_add_header(ctx, 0, "Content-Type", ct);
+        uwr_http_add_header(ctx, "Content-Type", ct);
         uwr_http_add_header(
             ctx,
-            1,
             "Content-Length",
             &format!("{}", uwr_get_http_content_len(ctx)),
         );

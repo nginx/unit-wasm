@@ -118,6 +118,9 @@ typedef struct {
 
 	/* points to the end of ctx->req_buf */
 	u8 *reqp;
+
+	/* tracks the response header index number */
+	s32 resp_hdr_idx;
 } luw_ctx_t;
 
 typedef enum {
@@ -189,7 +192,7 @@ extern size_t luw_mem_fill_buf_from_req(luw_ctx_t *ctx, size_t from);
 extern void luw_mem_reset(luw_ctx_t *ctx);
 extern void luw_http_send_response(const luw_ctx_t *ctx);
 extern void luw_http_init_headers(luw_ctx_t *ctx, size_t nr, size_t offset);
-extern void luw_http_add_header(luw_ctx_t *ctx, u16 idx, const char *name,
+extern void luw_http_add_header(luw_ctx_t *ctx, const char *name,
 				const char *value);
 extern void luw_http_send_headers(const luw_ctx_t *ctx);
 extern void luw_http_response_end(void);

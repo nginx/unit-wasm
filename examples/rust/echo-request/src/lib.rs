@@ -104,10 +104,9 @@ pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
     // storing the response headers at the beginning of our shared
     // memory at offset 0.
     uwr_http_init_headers(ctx, 2, 0);
-    uwr_http_add_header(ctx, 0, "Content-Type", "text/plain");
+    uwr_http_add_header(ctx, "Content-Type", "text/plain");
     uwr_http_add_header(
         ctx,
-        1,
         "Content-Length",
         &format!("{}", uwr_get_response_data_size(ctx)),
     );

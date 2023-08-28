@@ -83,6 +83,7 @@ void luw_init_ctx(luw_ctx_t *ctx, u8 *addr, size_t offset)
 	ctx->resp_offset = offset;
 	ctx->resp->size = 0;
 	ctx->resp_hdr->nr_fields = 0;
+	ctx->resp_hdr_idx = -1;
 }
 
 /*
@@ -326,6 +327,7 @@ void luw_mem_reset(luw_ctx_t *ctx)
 	ctx->mem = ctx->resp->data;
 	ctx->resp->size = 0;
 	ctx->resp_hdr->nr_fields = 0;
+	ctx->resp_hdr_idx = -1;
 }
 
 void luw_http_send_response(const luw_ctx_t *ctx)
@@ -342,9 +344,14 @@ void luw_http_init_headers(luw_ctx_t *ctx, size_t nr, size_t offset)
 	ctx->resp_hdr->nr_fields = nr;
 }
 
-void luw_http_add_header(luw_ctx_t *ctx, u16 idx, const char *name,
-			 const char *value)
+void luw_http_add_header(luw_ctx_t *ctx, const char *name, const char *value)
 {
+	s32 idx = ctx->resp_hdr_idx;
+
+	idx++;
+	if ((u32)idx == ctx->resp_hdr->nr_fields)
+		return;
+
 	ctx->resp_hdr->fields[idx].name_off = ctx->hdrp - ctx->addr;
 	ctx->resp_hdr->fields[idx].name_len = strlen(name);
 	ctx->hdrp = mempcpy(ctx->hdrp, name, strlen(name));
@@ -352,6 +359,8 @@ void luw_http_add_header(luw_ctx_t *ctx, u16 idx, const char *name,
 	ctx->resp_hdr->fields[idx].value_off = ctx->hdrp - ctx->addr;
 	ctx->resp_hdr->fields[idx].value_len = strlen(value);
 	ctx->hdrp = mempcpy(ctx->hdrp, value, strlen(value));
+
+	ctx->resp_hdr_idx = idx;
 }
 
 void luw_http_send_headers(const luw_ctx_t *ctx)

@@ -43,6 +43,7 @@ pub const fn UWR_CTX_INITIALIZER() -> luw_ctx_t {
         req_buf: null_mut(),
         hdrp: null_mut(),
         reqp: null_mut(),
+        resp_hdr_idx: -1,
     }
 }
 
@@ -173,14 +174,12 @@ pub fn uwr_http_init_headers(ctx: *mut luw_ctx_t, nr: usize, offset: usize) {
 
 pub fn uwr_http_add_header(
     ctx: *mut luw_ctx_t,
-    idx: u16,
     name: &str,
     value: &str,
 ) {
     unsafe {
         luw_http_add_header(
             ctx,
-            idx,
             S2C!(name).as_ptr() as *const i8,
             S2C!(value).as_ptr() as *const i8,
         );

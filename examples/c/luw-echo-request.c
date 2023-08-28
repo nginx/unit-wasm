@@ -85,8 +85,8 @@ int luw_request_handler(u8 *addr)
 	luw_http_init_headers(&ctx, 2, 0);
 
 	snprintf(clen, sizeof(clen), "%lu", luw_get_response_data_size(&ctx));
-	luw_http_add_header(&ctx, 0, "Content-Type", "text/plain");
-	luw_http_add_header(&ctx, 1, "Content-Length", clen);
+	luw_http_add_header(&ctx, "Content-Type", "text/plain");
+	luw_http_add_header(&ctx, "Content-Length", clen);
 
 	luw_http_send_headers(&ctx);
 
