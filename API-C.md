@@ -16,7 +16,7 @@ C Library for creating WebAssembly modules for use with NGINX Unit.
 6. [Function Handlers](#function-handlers)
   * [Optional](#optional)
     - [luw_module_init_handler](#luw_module_init_handler)
-    - [luw_module_end_handler](#luw-_module_end_handler)
+    - [luw_module_end_handler](#luw_module_end_handler)
     - [luw_request_init_handler](#luw_request_init_handler)
     - [luw_request_end_handler](#luw_request_end_handler)
     - [luw_response_end_handler](#luw_response_end_handler)
