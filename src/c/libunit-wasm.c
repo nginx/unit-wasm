@@ -234,13 +234,13 @@ void luw_http_hdr_iter(luw_ctx_t *ctx,
 	}
 }
 
-const char *luw_http_hdr_get_value(luw_ctx_t *ctx, const char *hdr)
+const char *luw_http_hdr_get_value(const luw_ctx_t *ctx, const char *hdr)
 {
 	luw_http_hdr_iter_t *iter;
 	const char *name;
 	const char *value;
 
-	luw_foreach_http_hdr((*ctx), iter, name, value) {
+	luw_foreach_http_hdr(((luw_ctx_t)*ctx), iter, name, value) {
 		if (strcasecmp(name, hdr) == 0)
 			return value;
 	}

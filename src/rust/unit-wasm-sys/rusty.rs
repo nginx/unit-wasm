@@ -124,7 +124,7 @@ pub fn uwr_http_hdr_iter(
     unsafe { luw_http_hdr_iter(ctx, luw_http_hdr_iter_func, user_data) }
 }
 
-pub fn uwr_http_hdr_get_value(ctx: *mut luw_ctx_t, hdr: &str) -> &'static str {
+pub fn uwr_http_hdr_get_value(ctx: *const luw_ctx_t, hdr: &str) -> &'static str {
     C2S!(luw_http_hdr_get_value(ctx, S2C!(hdr).as_ptr() as *const i8))
 }
 

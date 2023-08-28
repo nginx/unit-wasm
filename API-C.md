@@ -711,7 +711,7 @@ luw_http_hdr_iter(&ctx, hdr_iter_func, NULL);
 ### luw_http_hdr_get_value
 
 ```C
-const char *luw_http_hdr_get_value(luw_ctx_t *ctx, const char *hdr);
+const char *luw_http_hdr_get_value(const luw_ctx_t *ctx, const char *hdr);
 ```
 
 Given a HTTP header _hdr_ this function will look it up in the request and

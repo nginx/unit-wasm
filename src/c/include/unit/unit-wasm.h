@@ -183,7 +183,8 @@ extern void luw_http_hdr_iter(luw_ctx_t *ctx,
 							     const char *value,
 							     void *data),
 			      void *user_data);
-extern const char *luw_http_hdr_get_value(luw_ctx_t *ctx, const char *hdr);
+extern const char *luw_http_hdr_get_value(const luw_ctx_t *ctx,
+					  const char *hdr);
 extern size_t luw_get_response_data_size(const luw_ctx_t *ctx);
 extern int luw_mem_writep(luw_ctx_t *ctx, const char *fmt, ...);
 extern size_t luw_mem_writep_data(luw_ctx_t *ctx, const u8 *src, size_t size);
