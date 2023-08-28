@@ -1,6 +1,6 @@
 [package]
 name = "unit-wasm"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Timo Stark <t.stark@f5.com>", "Andrew Clayton <a.clayton@f5.com>"]
 description = "WASM SDK for NGINX Unit"
 license = "Apache-2.0"
