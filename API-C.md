@@ -212,6 +212,9 @@ typedef struct {
 
         /* points to the end of ctx->req_buf */
         u8 *reqp;
+
+        /* tracks the response header index number */
+        s32 resp_hdr_idx;
 } luw_ctx_t;
 ```
 
@@ -864,13 +867,10 @@ luw_http_init_headers(ctx, 2, 0);
 ### luw_http_add_header
 
 ```C
-void luw_http_add_header(luw_ctx_t *ctx, u16 idx, const char *name,
-                         const char *value);
+void luw_http_add_header(luw_ctx_t *ctx, const char *name, const char *value);
 ```
 
 This function is used to add a header to the response.
-
-_idx_ is the index (starting at 0) of the header we are adding.
 
 _name_ is the name of the header.
 
@@ -882,8 +882,8 @@ Example
 char clen[32];
 /* ... */
 snprintf(clen, sizeof(clen), "%lu", luw_get_response_data_size(&ctx));
-luw_http_add_header(&ctx, 0, "Content-Type", "text/plain");
-luw_http_add_header(&ctx, 1, "Content-Length", clen);
+luw_http_add_header(&ctx, "Content-Type", "text/plain");
+luw_http_add_header(&ctx, "Content-Length", clen);
 ```
 
 ### luw_http_send_headers
