@@ -830,7 +830,7 @@ uwr_http_add_header(&ctx, "Content-Type", "text/plain");
 uwr_http_add_header(
     ctx,
     "Content-Length",
-    &format!("{}", uwr_get_http_content_len(ctx)),
+    &format!("{}", uwr_get_response_data_size(ctx)),
 );
 ```
 
