@@ -103,6 +103,10 @@ pub fn uwr_get_http_content_sent(ctx: *const luw_ctx_t) -> usize {
     unsafe { luw_get_http_content_sent(ctx) }
 }
 
+pub fn uwr_get_http_total_content_sent(ctx: *const luw_ctx_t) -> usize {
+    unsafe { luw_get_http_total_content_sent(ctx) }
+}
+
 pub fn uwr_get_http_content(ctx: *const luw_ctx_t) -> *const u8 {
     unsafe { luw_get_http_content(ctx) }
 }

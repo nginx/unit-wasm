@@ -67,6 +67,7 @@ and there isn't a real need to create wrappers specifically for them.
   * [uwr_get_http_content_str](#uwr_get_http_content_str)
   * [uwr_get_http_content_len](#uwr_get_http_content_len)
   * [uwr_get_http_content_sent](#uwr_get_http_content_sent)
+  * [uwr_get_http_total_content_sent](#uwr_get_http_total_content_sent)
   * [uwr_http_is_tls](#uwr_http_is_tls)
   * [uwr_http_hdr_iter](#uwr_http_hdr_iter)
   * [uwr_http_hdr_get_value](#uwr_http_hdr_get_value)
@@ -621,6 +622,16 @@ pub fn uwr_get_http_content_sent(ctx: *const luw_ctx_t) -> usize;
 This function returns the length of the content that was sent to the
 WebAssembly module in _this_ request. Remember, a single HTTP request may be
 split over several calls to luw_request_handler().
+
+### uwr_get_http_total_content_sent
+
+```Rust
+pub fn uwr_get_http_total_content_sent(ctx: *const luw_ctx_t) -> usize;
+```
+
+This function returns the total length of the content that was sent to the
+WebAssembly module so far. Remember, a single HTTP request may be split over
+several calls to luw_request_handler().
 
 ### uwr_http_is_tls
 
