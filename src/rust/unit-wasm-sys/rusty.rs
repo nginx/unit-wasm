@@ -115,7 +115,7 @@ pub fn uwr_get_http_content_str(ctx: *const luw_ctx_t) -> &'static str {
     unsafe {
         let slice = slice::from_raw_parts(
             uwr_get_http_content(ctx),
-            uwr_get_http_content_len(ctx),
+            uwr_get_http_total_content_sent(ctx),
         );
         str::from_utf8(slice).unwrap()
     }
