@@ -19,7 +19,23 @@ use std::os::raw::c_char;
 use std::os::raw::c_void;
 ```
 
+## Naming
+
+You will see references to functions etc starting with *luw_* or *LUW_* and
+*uwr_".
+
+**luw/LUW** (libunit-wasm) come from the underlying C library and in the Rust
+case are the auto-generated bindings with a few manual additions.
+
+**uwr** (Unit Wasm Rust aka '_rusty_') is a more Rust native wrapper ontop of
+the bindings.
+
+In _rusty_ the luw/LUW API is generally the low level stuff like the library
+version macros and the various function handlers where they can be used as is
+and there isn't a real need to create wrappers specifically for them.
+
 1. ['Rusty' Rust API](#rusty-rust-api)
+  * [Naming](#naming)
 2. [Macros](#macros)
   * [Version](#version)
   * [String Conversion](#string-conversion)
