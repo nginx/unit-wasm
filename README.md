@@ -305,6 +305,14 @@ Create the following Unit config
             "action": {
                 "pass": "applications/rust-upload-reflector"
             }
+        },
+        {
+            "match": {
+                "uri": "/hello-world*"
+            },
+            "action": {
+                "pass": "applications/rust-hello-world"
+            }
         }
     ],
 
@@ -344,6 +352,13 @@ Create the following Unit config
             "free_handler": "luw_free_handler",
             "request_end_handler": "uwr_request_end_handler",
             "response_end_handler": "uwr_response_end_handler"
+        },
+        "rust-hello-world": {
+            "type": "wasm",
+            "module": "/path/to/unit-wasm/examples/rust/hello-world/target/wasm32-wasi/debug/rust_hello_world.wasm",
+            "request_handler": "uwr_request_handler",
+            "malloc_handler": "luw_malloc_handler",
+            "free_handler": "luw_free_handler"
         }
     }
 }
