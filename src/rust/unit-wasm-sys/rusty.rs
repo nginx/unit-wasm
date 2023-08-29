@@ -9,6 +9,8 @@ use std::ffi::c_char;
 use std::ffi::c_void;
 use std::ffi::CStr;
 use std::ptr::null_mut;
+use std::slice;
+use std::str;
 
 #[macro_export]
 macro_rules! C2S {
@@ -99,6 +101,16 @@ pub fn uwr_get_http_content(ctx: *const luw_ctx_t) -> *const u8 {
 
 pub fn uwr_get_http_content_len(ctx: *const luw_ctx_t) -> usize {
     unsafe { luw_get_http_content_len(ctx) }
+}
+
+pub fn uwr_get_http_content_str(ctx: *const luw_ctx_t) -> &'static str {
+    unsafe {
+        let slice = slice::from_raw_parts(
+            uwr_get_http_content(ctx),
+            uwr_get_http_content_len(ctx),
+        );
+        str::from_utf8(slice).unwrap()
+    }
 }
 
 pub fn uwr_get_http_content_sent(ctx: *const luw_ctx_t) -> usize {

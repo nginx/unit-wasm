@@ -64,6 +64,7 @@ and there isn't a real need to create wrappers specifically for them.
   * [uwr_get_http_local_port](#uwr_get_http_local_port)
   * [uwr_get_http_server_name](#uwr_get_http_server_name)
   * [uwr_get_http_content](#uwr_get_http_content)
+  * [uwr_get_http_content_str](#uwr_get_http_content_str)
   * [uwr_get_http_content_len](#uwr_get_http_content_len)
   * [uwr_get_http_content_sent](#uwr_get_http_content_sent)
   * [uwr_http_is_tls](#uwr_http_is_tls)
@@ -591,6 +592,14 @@ pub fn uwr_get_http_content(ctx: *const luw_ctx_t) -> *const u8;
 ```
 
 This function returns a pointer to the start of the request body.
+
+### uwr_get_http_content_str
+
+```Rsut
+pub fn uwr_get_http_content_str(ctx: *const luw_ctx_t) -> &'static str;
+```
+
+Same as above but returns a Rust str.
 
 ### uwr_get_http_content_len
 
