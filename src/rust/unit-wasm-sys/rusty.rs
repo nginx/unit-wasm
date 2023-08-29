@@ -95,12 +95,16 @@ pub fn uwr_get_http_server_name(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_server_name(ctx))
 }
 
-pub fn uwr_get_http_content(ctx: *const luw_ctx_t) -> *const u8 {
-    unsafe { luw_get_http_content(ctx) }
-}
-
 pub fn uwr_get_http_content_len(ctx: *const luw_ctx_t) -> usize {
     unsafe { luw_get_http_content_len(ctx) }
+}
+
+pub fn uwr_get_http_content_sent(ctx: *const luw_ctx_t) -> usize {
+    unsafe { luw_get_http_content_sent(ctx) }
+}
+
+pub fn uwr_get_http_content(ctx: *const luw_ctx_t) -> *const u8 {
+    unsafe { luw_get_http_content(ctx) }
 }
 
 pub fn uwr_get_http_content_str(ctx: *const luw_ctx_t) -> &'static str {
@@ -111,10 +115,6 @@ pub fn uwr_get_http_content_str(ctx: *const luw_ctx_t) -> &'static str {
         );
         str::from_utf8(slice).unwrap()
     }
-}
-
-pub fn uwr_get_http_content_sent(ctx: *const luw_ctx_t) -> usize {
-    unsafe { luw_get_http_content_sent(ctx) }
 }
 
 pub fn uwr_http_is_tls(ctx: *const luw_ctx_t) -> bool {
