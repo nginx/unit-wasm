@@ -38,6 +38,7 @@ C Library for creating WebAssembly modules for use with NGINX Unit.
   * [luw_get_http_content](#luw_get_http_content)
   * [luw_get_http_content_len](#luw_get_http_content_len)
   * [luw_get_http_content_sent](#luw_get_http_content_sent)
+  * [luw_get_http_total_content_sent](#luw_get_http_total_content_sent)
   * [luw_http_is_tls](#luw_http_is_tls)
   * [luw_http_hdr_iter](#luw_http_hdr_iter)
   * [luw_http_hdr_get_value](#luw_http_hdr_get_value)
@@ -656,6 +657,16 @@ size_t luw_get_http_content_sent(const luw_ctx_t *ctx);
 This function returns the length of the content that was sent to the
 WebAssembly module in _this_ request. Remember, a single HTTP request may be
 split over several calls to luw_request_handler().
+
+### luw_get_http_total_content_sent
+
+```C
+size_t luw_get_http_total_content_sent(const luw_ctx_t *ctx);
+```
+
+This function returns the total length of the content that was sent to the
+WebAssembly module so far. Remember, a single HTTP request may be split over
+several calls to luw_request_handler().
 
 ### luw_http_is_tls
 

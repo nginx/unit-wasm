@@ -176,6 +176,7 @@ extern const char *luw_get_http_server_name(const luw_ctx_t *ctx);
 extern const u8 *luw_get_http_content(const luw_ctx_t *ctx);
 extern size_t luw_get_http_content_len(const luw_ctx_t *ctx);
 extern size_t luw_get_http_content_sent(const luw_ctx_t *ctx);
+extern size_t luw_get_http_total_content_sent(const luw_ctx_t *ctx);
 extern bool luw_http_is_tls(const luw_ctx_t *ctx);
 extern void luw_http_hdr_iter(luw_ctx_t *ctx,
 			      bool (*luw_http_hdr_iter_func)(luw_ctx_t *ctx,

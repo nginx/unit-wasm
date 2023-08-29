@@ -207,6 +207,12 @@ size_t luw_get_http_content_sent(const luw_ctx_t *ctx)
 	return ctx->req->content_sent;
 }
 
+/* Returns the size of the overall content sent so far */
+size_t luw_get_http_total_content_sent(const luw_ctx_t *ctx)
+{
+	return ctx->req->total_content_sent;
+}
+
 bool luw_http_is_tls(const luw_ctx_t *ctx)
 {
 	return ctx->req->tls;
