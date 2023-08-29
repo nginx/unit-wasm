@@ -78,6 +78,8 @@ and there isn't a real need to create wrappers specifically for them.
   * [uwr_http_send_response](#uwr_http_send_response)
   * [uwr_http_init_headers](#uwr_http_init_headers)
   * [uwr_http_add_header](#uwr_http_add_header)
+  * [uwr_http_add_header_content_type](#uwr_http_add_header_content_type)
+  * [uwr_http_add_header_content_len](#uwr_http_add_header_content_len)
   * [uwr_http_send_headers](#uwr_http_send_headers)
   * [uwr_http_response_end](#uwr_http_response_end)
   * [uwr_mem_get_init_size](#uwr_mem_get_init_size)
@@ -858,6 +860,37 @@ uwr_http_add_header(
     &format!("{}", uwr_get_response_data_size(ctx)),
 );
 ```
+
+### uwr_http_add_header_content_type
+
+```Rust
+pub fn uwr_http_add_header_content_type(ctx: *mut luw_ctx_t, ctype: &str);
+```
+
+A convenience function for setting the 'Content-Type' response header.
+E.g the above example that adds the _Content-Type_ header could be
+written as
+
+```Rust
+uwr_http_add_header_content_type(ctx, "text/plain");
+```
+
+### uwr_http_add_header_content_len
+
+```Rust
+pub fn uwr_http_add_header_content_len(ctx: *mut luw_ctx_t);
+```
+
+A convenience function for setting the 'Content-Length' response header.
+E.g the above example that adds the _Content-Length_ header could be
+written as
+
+```Rust
+uwr_http_add_header_content_len(ctx);
+```
+
+This function uses [uwr_get_response_data_size](#uwr_get_response_data_size)
+internally to get the size of the response data.
 
 ### uwr_http_send_headers
 

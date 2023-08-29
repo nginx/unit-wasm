@@ -197,6 +197,18 @@ pub fn uwr_http_add_header(ctx: *mut luw_ctx_t, name: &str, value: &str) {
     }
 }
 
+pub fn uwr_http_add_header_content_type(ctx: *mut luw_ctx_t, ctype: &str) {
+    uwr_http_add_header(ctx, "Content-Type", ctype);
+}
+
+pub fn uwr_http_add_header_content_len(ctx: *mut luw_ctx_t) {
+    uwr_http_add_header(
+        ctx,
+        "Content-Length",
+        &format!("{}", uwr_get_response_data_size(ctx)),
+    );
+}
+
 pub fn uwr_http_send_headers(ctx: *const luw_ctx_t) {
     unsafe {
         luw_http_send_headers(ctx);
