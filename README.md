@@ -25,7 +25,7 @@ It also has some demo WebAssembly modules written in C and Rust.
 **examples/c** contains some demo WebAssembly modules that show both the raw
 interface to Unit (\*-raw.c) and also the use of libunit-wasm (luw-\*.c).
 
-**examples/rust** contains rust versions of the above C demo modules.
+**examples/rust** contains rust versions of the above C demo modules and more.
 
 **examples/docker** contains docker files for building Unit with WebAssembly
 support and the C examples.
@@ -235,6 +235,7 @@ The C and Rust example Wasm modules will be located at
 examples/c/luw-echo-request.wasm
 examples/c/luw-upload-reflector.wasm
 examples/rust/echo-request/target/wasm32-wasi/debug/rust_echo_request.wasm
+examples/rust/hello-world/target/wasm32-wasi/debug/rust_hello_world.wasm
 examples/rust/upload-reflector/target/wasm32-wasi/debug/rust_upload_reflector.wasm
 ```
 
