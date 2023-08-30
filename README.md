@@ -173,7 +173,13 @@ and curl command
 $ curl http://localhost:8888/
 ```
 
-7) Enjoy!
+7) Start writing your own Wasm modules in Rust!
+
+To help you get started, you can check out the Rust examples under
+[examples/rust](https://github.com/nginx/unit-wasm/tree/main/examples/rust)
+and also the
+[API-Rust.md](https://github.com/nginx/unit-wasm/blob/main/API-Rust.md)
+for an overview of the API.
 
 ## Working With the Repository
 
