@@ -102,12 +102,8 @@ pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
     // storing the response headers at the beginning of our shared
     // memory at offset 0.
     uwr_http_init_headers(ctx, 2, 0);
-    uwr_http_add_header(ctx, "Content-Type", "text/plain");
-    uwr_http_add_header(
-        ctx,
-        "Content-Length",
-        &format!("{}", uwr_get_response_data_size(ctx)),
-    );
+    uwr_http_add_header_content_type(ctx, "text/plain");
+    uwr_http_add_header_content_len(ctx);
 
     // This calls nxt_wasm_send_headers() in Unit
     uwr_http_send_headers(ctx);
