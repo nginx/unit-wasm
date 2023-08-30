@@ -668,6 +668,8 @@ This function returns the total length of the content that was sent to the
 WebAssembly module so far. Remember, a single HTTP request may be split over
 several calls to luw_request_handler().
 
+_Version: 0.2.0_
+
 ### luw_http_is_tls
 
 ```C

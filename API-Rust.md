@@ -604,6 +604,8 @@ pub fn uwr_get_http_content_str(ctx: *const luw_ctx_t) -> &'static str;
 
 Same as above but returns a Rust str.
 
+_Version: 0.2.0_
+
 ### uwr_get_http_content_len
 
 ```Rust
@@ -632,6 +634,8 @@ pub fn uwr_get_http_total_content_sent(ctx: *const luw_ctx_t) -> usize;
 This function returns the total length of the content that was sent to the
 WebAssembly module so far. Remember, a single HTTP request may be split over
 several calls to luw_request_handler().
+
+_Version: 0.2.0_
 
 ### uwr_http_is_tls
 
@@ -886,6 +890,8 @@ written as
 uwr_http_add_header_content_type(ctx, "text/plain");
 ```
 
+_Version: 0.2.0_
+
 ### uwr_http_add_header_content_len
 
 ```Rust
@@ -902,6 +908,8 @@ uwr_http_add_header_content_len(ctx);
 
 This function uses [uwr_get_response_data_size](#uwr_get_response_data_size)
 internally to get the size of the response data.
+
+_Version: 0.2.0_
 
 ### uwr_http_send_headers
 
