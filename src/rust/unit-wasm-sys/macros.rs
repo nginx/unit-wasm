@@ -6,7 +6,7 @@
  */
 
 pub const LUW_VERSION_MAJOR: i32 = 0;
-pub const LUW_VERSION_MINOR: i32 = 1;
+pub const LUW_VERSION_MINOR: i32 = 2;
 pub const LUW_VERSION_PATCH: i32 = 0;
 
 pub const LUW_VERSION_NUMBER: i32 =
