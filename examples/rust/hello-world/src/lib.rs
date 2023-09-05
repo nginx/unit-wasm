@@ -8,14 +8,13 @@
 
 use unit_wasm::rusty::*;
 
-static mut REQUEST_BUF: *mut u8 = std::ptr::null_mut();
-
 #[no_mangle]
 pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
     let ctx = &mut UWR_CTX_INITIALIZER();
+    let mut request_buf: *mut u8 = std::ptr::null_mut();
 
     uwr_init_ctx(ctx, addr, 4096);
-    uwr_set_req_buf(ctx, unsafe { &mut REQUEST_BUF }, LUW_SRB_ALLOC);
+    uwr_set_req_buf(ctx, &mut request_buf, LUW_SRB_ALLOC);
 
     uwr_write_str!(
         ctx,
@@ -35,7 +34,7 @@ pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
     uwr_http_send_response(ctx);
     uwr_http_response_end();
 
-    uwr_free(unsafe { REQUEST_BUF });
+    uwr_free(request_buf);
 
     return 0;
 }
