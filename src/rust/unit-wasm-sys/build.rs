@@ -36,6 +36,9 @@ fn generate_bindings() {
         .allowlist_function("^luw_.*")
         .allowlist_var("^luw_.*")
         .allowlist_type("^luw_.*")
+        .default_enum_style(bindgen::EnumVariation::Rust {
+            non_exhaustive: false,
+        })
         .generate()
         .expect("Unable to generate bindings");
 
