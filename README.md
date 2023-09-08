@@ -73,7 +73,7 @@ that last task.
 Install the following as normal
 
 ```
-# apt install make clang llvm lld
+# apt install wasi-libc make clang llvm lld
 ```
 
 For the rest you will likely need to use [rustup](https://rustup.rs). Caveat
