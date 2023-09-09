@@ -179,6 +179,12 @@ pub fn uwr_luw_mem_reset(ctx: *mut luw_ctx_t) {
     }
 }
 
+pub fn uwr_http_set_response_status(status: luw_http_status_t) {
+    unsafe {
+        luw_http_set_response_status(status);
+    }
+}
+
 pub fn uwr_http_send_response(ctx: *const luw_ctx_t) {
     unsafe {
         luw_http_send_response(ctx);

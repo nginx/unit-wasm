@@ -40,6 +40,8 @@ and there isn't a real need to create wrappers specifically for them.
   * [Version](#version)
   * [String Conversion](#string-conversion)
   * [uwr_write_str!](#uwr_write_str)
+3. [Enums](#enums)
+  [luw_http_status_t](#luw_http_status_t)
 3. [Function Handlers](#function-handlers)
   * [Optional](#optional)
     - [luw_module_init_handler](#luw_module_init_handler)
@@ -76,6 +78,7 @@ and there isn't a real need to create wrappers specifically for them.
   * [uwr_req_buf_append](#uwr_req_buf_append)
   * [uwr_mem_fill_buf_from_req](#uwr_mem_fill_buf_from_req)
   * [uwr_mem_reset](#uwr_mem_reset)
+  * [uwr_http_set_response_status](#uwr_http_set_response_status)
   * [uwr_http_send_response](#uwr_http_send_response)
   * [uwr_http_init_headers](#uwr_http_init_headers)
   * [uwr_http_add_header](#uwr_http_add_header)
@@ -159,6 +162,55 @@ It takes the luw_ctx_t context pointer, a string that will be run through the
 [format!()](https://doc.rust-lang.org/std/macro.format.html) macro and any
 optional arguments.
 
+## Enums
+
+### luw_http_status_t
+```Rust
+pub enum luw_http_status_t {
+        LUW_HTTP_CONTINUE                               = 100,
+        LUW_HTTP_SWITCHING_PROTOCOLS                    = 101,
+
+        LUW_HTTP_OK                                     = 200,
+        LUW_HTTP_CREATED                                = 201,
+        LUW_HTTP_ACCEPTED                               = 202,
+        LUW_HTTP_NO_CONTENT                             = 204,
+
+        LUW_HTTP_MULTIPLE_CHOICES                       = 300,
+        LUW_HTTP_MOVED_PERMANENTLY                      = 301,
+        LUW_HTTP_FOUND                                  = 302,
+        LUW_HTTP_SEE_OTHER                              = 303,
+        LUW_HTTP_NOT_MODIFIED                           = 304,
+        LUW_HTTP_TEMPORARY_REDIRECT                     = 307,
+        LUW_HTTP_PERMANENT_REDIRECT                     = 308,
+
+        LUW_HTTP_BAD_REQUEST                            = 400,
+        LUW_HTTP_UNAUTHORIZED                           = 401,
+        LUW_HTTP_FORBIDDEN                              = 403,
+        LUW_HTTP_NOT_FOUND                              = 404,
+        LUW_HTTP_METHOD_NOT_ALLOWED                     = 405,
+        LUW_HTTP_NOT_ACCEPTABLE                         = 406,
+        LUW_HTTP_REQUEST_TIMEOUT                        = 408,
+        LUW_HTTP_CONFLICT                               = 409,
+        LUW_HTTP_GONE                                   = 410,
+        LUW_HTTP_LENGTH_REQUIRED                        = 411,
+        LUW_HTTP_PAYLOAD_TOO_LARGE                      = 413,
+        LUW_HTTP_URI_TOO_LONG                           = 414,
+        LUW_HTTP_UNSUPPORTED_MEDIA_TYPE                 = 415,
+        LUW_HTTP_UPGRADE_REQUIRED                       = 426,
+        LUW_HTTP_TOO_MANY_REQUESTS                      = 429,
+        LUW_HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE        = 431,
+
+        /* Proposed by RFC 7725 */
+        LUW_HTTP_UNAVAILABLE_FOR_LEGAL_REASONS          = 451,
+
+        LUW_HTTP_INTERNAL_SERVER_ERROR                  = 500,
+        LUW_HTTP_NOT_IMPLEMENTED                        = 501,
+        LUW_HTTP_BAD_GATEWAY                            = 502,
+        LUW_HTTP_SERVICE_UNAVAILABLE                    = 503,
+        LUW_HTTP_GATEWAY_TIMEOUT                        = 504,
+}
+```
+
 ## Function Handlers
 
 These functions are exported from the WebAssembly module and are called from
@@ -198,8 +250,14 @@ You will need to provide your own implementation of this function.
 It receives the base address of the shared memory. Essentially what is
 returned by luw_malloc_handler().
 
-It returns an int, this is currently ignored but will likely be used to
-indicate a HTTP status code.
+It returns an int. This should nearly always be _0_.
+
+If you wish to indicate a '500 Internal Server Error', for example if some
+internal API has failed or an OS level error occurred, then you can simply
+return _-1_, _if_ you have haven't already _sent_ any response or headers.
+
+You can still return 0 _and_ set the HTTP response status to 500 using
+[uwr_http_set_response_status](#uwr_http_set_response_status).
 
 #### luw_malloc_handler
 
@@ -821,6 +879,53 @@ pub fn uwr_luw_mem_reset(ctx: *mut luw_ctx_t);
 
 This function resets the response buffer size and the number of response
 headers back to 0.
+
+### uwr_http_set_response_status
+
+```Rust
+pub fn uwr_http_set_response_status(status: luw_http_status_t);
+```
+
+This function is used to set the HTTP response status. It takes one of the
+[luw_http_status_t](#luw_http_status_t) enum values.
+
+It should be called before any calls to *uwr_http_send_response()* or
+*uwr_http_send_headers()*.
+
+If you don't call this function the response status defaults to '200 OK'.
+
+If you wish to error out with a '500 Internal Server Error', you don't need to
+call this function. Simply returning _-1_ from the request_handler function
+will indicate this error.
+
+E.g
+
+Send a '403 Forbidden'
+
+```Rust
+/* ... */
+uwr_http_set_response_status(LUW_HTTP_FORBIDDEN);
+uwr_http_send_response(ctx);   /* Doesn't require any body */
+uwr_http_response_end();
+/* ... */
+return 0;
+```
+
+Send a '307 Temporary Re-direct'
+
+```Rust
+/* ... */
+uwr_http_set_response_status(LUW_HTTP_TEMPORARY_REDIRECT);
+
+uwr_http_init_headers(ctx, 1, 0);
+uwr_http_add_header(ctx, "Location", "https://example.com/");
+uwr_http_send_headers(ctx);
+uwr_http_response_end();
+/* ... */
+return 0;
+```
+
+_Version: 0.3.0_
 
 ### uwr_http_send_response
 

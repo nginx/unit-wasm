@@ -18,3 +18,4 @@ mod bindings {
 
 #[doc(no_inline)]
 pub use bindings::*;
+pub use bindings::luw_http_status_t::*;
