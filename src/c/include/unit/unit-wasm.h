@@ -40,6 +40,50 @@ typedef int16_t  s16;
 typedef uint8_t   u8;
 typedef int8_t    s8;
 
+typedef enum {
+	LUW_HTTP_CONTINUE				= 100,
+	LUW_HTTP_SWITCHING_PROTOCOLS			= 101,
+
+	LUW_HTTP_OK					= 200,
+	LUW_HTTP_CREATED				= 201,
+	LUW_HTTP_ACCEPTED				= 202,
+	LUW_HTTP_NO_CONTENT				= 204,
+
+	LUW_HTTP_MULTIPLE_CHOICES			= 300,
+	LUW_HTTP_MOVED_PERMANENTLY			= 301,
+	LUW_HTTP_FOUND					= 302,
+	LUW_HTTP_SEE_OTHER				= 303,
+	LUW_HTTP_NOT_MODIFIED				= 304,
+	LUW_HTTP_TEMPORARY_REDIRECT			= 307,
+	LUW_HTTP_PERMANENT_REDIRECT			= 308,
+
+	LUW_HTTP_BAD_REQUEST				= 400,
+	LUW_HTTP_UNAUTHORIZED				= 401,
+	LUW_HTTP_FORBIDDEN				= 403,
+	LUW_HTTP_NOT_FOUND				= 404,
+	LUW_HTTP_METHOD_NOT_ALLOWED			= 405,
+	LUW_HTTP_NOT_ACCEPTABLE				= 406,
+	LUW_HTTP_REQUEST_TIMEOUT			= 408,
+	LUW_HTTP_CONFLICT				= 409,
+	LUW_HTTP_GONE					= 410,
+	LUW_HTTP_LENGTH_REQUIRED			= 411,
+	LUW_HTTP_PAYLOAD_TOO_LARGE			= 413,
+	LUW_HTTP_URI_TOO_LONG				= 414,
+	LUW_HTTP_UNSUPPORTED_MEDIA_TYPE			= 415,
+	LUW_HTTP_UPGRADE_REQUIRED			= 426,
+	LUW_HTTP_TOO_MANY_REQUESTS			= 429,
+	LUW_HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE	= 431,
+
+	/* Proposed by RFC 7725 */
+	LUW_HTTP_UNAVAILABLE_FOR_LEGAL_REASONS		= 451,
+
+	LUW_HTTP_INTERNAL_SERVER_ERROR			= 500,
+	LUW_HTTP_NOT_IMPLEMENTED			= 501,
+	LUW_HTTP_BAD_GATEWAY				= 502,
+	LUW_HTTP_SERVICE_UNAVAILABLE			= 503,
+	LUW_HTTP_GATEWAY_TIMEOUT			= 504,
+} luw_http_status_t;
+
 struct luw_hdr_field {
 	u32 name_off;
 	u32 name_len;
@@ -151,6 +195,8 @@ __attribute__((import_module("env"), import_name("nxt_wasm_send_headers")))
 void nxt_wasm_send_headers(u32 offset);
 __attribute__((import_module("env"), import_name("nxt_wasm_send_response")))
 void nxt_wasm_send_response(u32 offset);
+__attribute__((import_module("env"), import_name("nxt_wasm_set_resp_status")))
+void nxt_wasm_set_resp_status(u32 status);
 
 extern void luw_module_init_handler(void);
 extern void luw_module_end_handler(void);
@@ -192,6 +238,7 @@ extern size_t luw_mem_writep_data(luw_ctx_t *ctx, const u8 *src, size_t size);
 extern void luw_req_buf_append(luw_ctx_t *ctx, const u8 *src);
 extern size_t luw_mem_fill_buf_from_req(luw_ctx_t *ctx, size_t from);
 extern void luw_mem_reset(luw_ctx_t *ctx);
+extern void luw_http_set_response_status(luw_http_status_t status);
 extern void luw_http_send_response(const luw_ctx_t *ctx);
 extern void luw_http_init_headers(luw_ctx_t *ctx, size_t nr, size_t offset);
 extern void luw_http_add_header(luw_ctx_t *ctx, const char *name,

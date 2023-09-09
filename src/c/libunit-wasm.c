@@ -336,6 +336,11 @@ void luw_mem_reset(luw_ctx_t *ctx)
 	ctx->resp_hdr_idx = -1;
 }
 
+void luw_http_set_response_status(luw_http_status_t status)
+{
+	nxt_wasm_set_resp_status(status);
+}
+
 void luw_http_send_response(const luw_ctx_t *ctx)
 {
 	nxt_wasm_send_response(ctx->resp_offset);

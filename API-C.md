@@ -12,6 +12,8 @@ C Library for creating WebAssembly modules for use with NGINX Unit.
   * [Misc](#misc)
 3. [Types](#types)
 4. [Enums](#enums)
+  * [luw_srb_flags_t](#luw_srb_flags_t)
+  * [luw_http_status_t](#luw_http_status_t)
 5. [Structs](#structs)
 6. [Function Handlers](#function-handlers)
   * [Optional](#optional)
@@ -48,6 +50,7 @@ C Library for creating WebAssembly modules for use with NGINX Unit.
   * [luw_req_buf_append](#luw_req_buf_append)
   * [luw_mem_fill_buf_from_req](#luw_mem_fill_buf_from_req)
   * [luw_mem_reset](#luw_mem_reset)
+  * [luw_http_set_response_status](#luw_http_set_response_status)
   * [luw_http_send_response](#luw_http_send_response)
   * [luw_http_init_headers](#luw_http_init_headers)
   * [luw_http_add_header](#luw_http_add_header)
@@ -112,6 +115,8 @@ typedef int8_t    s8;
 
 ## Enums
 
+### luw_srb_flags_t
+
 ```C
 typedef enum {
         LUW_SRB_NONE = 0x00,
@@ -122,6 +127,54 @@ typedef enum {
         LUW_SRB_FLAGS_ALL = (LUW_SRB_NONE|LUW_SRB_APPEND|LUW_SRB_ALLOC|
                              LUW_SRB_FULL_SIZE)
 } luw_srb_flags_t;
+```
+
+### luw_http_status_t
+
+```C
+typedef enum {
+        LUW_HTTP_CONTINUE                               = 100,
+        LUW_HTTP_SWITCHING_PROTOCOLS                    = 101,
+
+        LUW_HTTP_OK                                     = 200,
+        LUW_HTTP_CREATED                                = 201,
+        LUW_HTTP_ACCEPTED                               = 202,
+        LUW_HTTP_NO_CONTENT                             = 204,
+
+        LUW_HTTP_MULTIPLE_CHOICES                       = 300,
+        LUW_HTTP_MOVED_PERMANENTLY                      = 301,
+        LUW_HTTP_FOUND                                  = 302,
+        LUW_HTTP_SEE_OTHER                              = 303,
+        LUW_HTTP_NOT_MODIFIED                           = 304,
+        LUW_HTTP_TEMPORARY_REDIRECT                     = 307,
+        LUW_HTTP_PERMANENT_REDIRECT                     = 308,
+
+        LUW_HTTP_BAD_REQUEST                            = 400,
+        LUW_HTTP_UNAUTHORIZED                           = 401,
+        LUW_HTTP_FORBIDDEN                              = 403,
+        LUW_HTTP_NOT_FOUND                              = 404,
+        LUW_HTTP_METHOD_NOT_ALLOWED                     = 405,
+        LUW_HTTP_NOT_ACCEPTABLE                         = 406,
+        LUW_HTTP_REQUEST_TIMEOUT                        = 408,
+        LUW_HTTP_CONFLICT                               = 409,
+        LUW_HTTP_GONE                                   = 410,
+        LUW_HTTP_LENGTH_REQUIRED                        = 411,
+        LUW_HTTP_PAYLOAD_TOO_LARGE                      = 413,
+        LUW_HTTP_URI_TOO_LONG                           = 414,
+        LUW_HTTP_UNSUPPORTED_MEDIA_TYPE                 = 415,
+        LUW_HTTP_UPGRADE_REQUIRED                       = 426,
+        LUW_HTTP_TOO_MANY_REQUESTS                      = 429,
+        LUW_HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE        = 431,
+
+        /* Proposed by RFC 7725 */
+        LUW_HTTP_UNAVAILABLE_FOR_LEGAL_REASONS          = 451,
+
+        LUW_HTTP_INTERNAL_SERVER_ERROR                  = 500,
+        LUW_HTTP_NOT_IMPLEMENTED                        = 501,
+        LUW_HTTP_BAD_GATEWAY                            = 502,
+        LUW_HTTP_SERVICE_UNAVAILABLE                    = 503,
+        LUW_HTTP_GATEWAY_TIMEOUT                        = 504,
+} luw_http_status_t;
 ```
 
 ## Structs
@@ -264,8 +317,14 @@ returned by luw_malloc_handler().
 
 This memory will contain a *struct luw_req*.
 
-It returns an int, this is currently ignored but will likely be used to
-indicate a HTTP status code.
+It returns an int. This should nearly always be _0_.
+
+If you wish to indicate a '500 Internal Server Error', for example if some
+internal API has failed or an OS level error occurred, then you can simply
+return _-1_, _if_ you have haven't already _sent_ any response or headers.
+
+You can still return 0 _and_ set the HTTP response status to 500 using
+[luw_http_set_resp_status](#luw_http_set_resp_status).
 
 #### luw_malloc_handler
 
@@ -849,6 +908,53 @@ void luw_mem_reset(luw_ctx_t *ctx);
 
 This function resets the response buffer size and the number of response
 headers back to 0.
+
+### luw_http_set_response_status
+
+```C
+void luw_http_set_response_status(luw_http_status_t status);
+```
+
+This function is used to set the HTTP response status. It takes one of the
+[luw_http_status_t](#luw_http_status_t) enum values.
+
+It should be called before any calls to *luw_http_send_response()* or
+*luw_http_send_headers()*.
+
+If you don't call this function the response status defaults to '200 OK'.
+
+If you wish to error out with a '500 Internal Server Error', you don't need to
+call this function. Simply returning _-1_ from the request_handler function
+will indicate this error.
+
+E.g
+
+Send a '403 Forbidden'
+
+```C
+/* ... */
+luw_http_set_response_status(LUW_HTTP_FORBIDDEN);
+luw_http_send_response(ctx);   /* Doesn't require any body */
+luw_http_response_end();
+/* ... */
+return 0;
+```
+
+Send a '307 Temporary Re-direct'
+
+```C
+/* ... */
+luw_http_set_response_status(LUW_HTTP_TEMPORARY_REDIRECT);
+
+luw_http_init_headers(ctx, 1, 0);
+luw_http_add_header(ctx, "Location", "https://example.com/");
+luw_http_send_headers(ctx);
+luw_http_response_end();
+/* ... */
+return 0;
+```
+
+_Version: 0.3.0_
 
 ### luw_http_send_response
 
