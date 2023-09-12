@@ -78,7 +78,7 @@ wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/w
 ```
 
 Next Compile the C demo Wasm Modules to `.wasm` files. This requires at least
-the following; make and clang, llvm, compiler-rt, and lld from LLVM 8.0+
+the following; make and clang, llvm, compiler-rt, and lld from LLVM 9.0+
 
 ```shell
 $ cd unit-wasm
@@ -106,6 +106,13 @@ Adjust the tar '-C ...' option accordingly below...
 
 ```shell
 wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/libclang_rt.builtins-wasm32-wasi-20.0.tar.gz | sudo tar -xvzf - -C /usr/lib/llvm-11/lib/clang/11.0.1
+```
+
+With recent enough versions of Clang (that support the -print-runtime-dir
+option) you can use the following command (as root)
+
+```shell
+wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/libclang_rt.builtins-wasm32-wasi-20.0.tar.gz | tar --strip-components=1 -xvzf - -C $(dirname $(clang -print-runtime-dir))
 ```
 
 Then try again...
