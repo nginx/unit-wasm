@@ -196,7 +196,7 @@ const u8 *luw_get_http_content(const luw_ctx_t *ctx)
 }
 
 /* Returns the size of the overall content length */
-size_t luw_get_http_content_len(const luw_ctx_t *ctx)
+u64 luw_get_http_content_len(const luw_ctx_t *ctx)
 {
 	return ctx->req->content_len;
 }
@@ -208,7 +208,7 @@ size_t luw_get_http_content_sent(const luw_ctx_t *ctx)
 }
 
 /* Returns the size of the overall content sent so far */
-size_t luw_get_http_total_content_sent(const luw_ctx_t *ctx)
+u64 luw_get_http_total_content_sent(const luw_ctx_t *ctx)
 {
 	return ctx->req->total_content_sent;
 }

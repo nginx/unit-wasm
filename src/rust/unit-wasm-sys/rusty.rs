@@ -95,7 +95,7 @@ pub fn uwr_get_http_server_name(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_server_name(ctx))
 }
 
-pub fn uwr_get_http_content_len(ctx: *const luw_ctx_t) -> usize {
+pub fn uwr_get_http_content_len(ctx: *const luw_ctx_t) -> u64 {
     unsafe { luw_get_http_content_len(ctx) }
 }
 
@@ -103,7 +103,7 @@ pub fn uwr_get_http_content_sent(ctx: *const luw_ctx_t) -> usize {
     unsafe { luw_get_http_content_sent(ctx) }
 }
 
-pub fn uwr_get_http_total_content_sent(ctx: *const luw_ctx_t) -> usize {
+pub fn uwr_get_http_total_content_sent(ctx: *const luw_ctx_t) -> u64 {
     unsafe { luw_get_http_total_content_sent(ctx) }
 }
 
@@ -115,7 +115,7 @@ pub fn uwr_get_http_content_str(ctx: *const luw_ctx_t) -> &'static str {
     unsafe {
         let slice = slice::from_raw_parts(
             uwr_get_http_content(ctx),
-            uwr_get_http_total_content_sent(ctx),
+            uwr_get_http_total_content_sent(ctx).try_into().unwrap(),
         );
         str::from_utf8(slice).unwrap()
     }
@@ -158,9 +158,15 @@ pub fn uwr_mem_write_str(ctx: *mut luw_ctx_t, src: &str) -> usize {
 pub fn uwr_mem_write_buf(
     ctx: *mut luw_ctx_t,
     src: *const u8,
-    size: usize,
+    size: u64,
 ) -> usize {
-    unsafe { luw_mem_writep_data(ctx, src, size) }
+    /*
+     * We're dealing with a 32bit address space, but we allow
+     * size to come from the output of uwr_get_http_content_len()
+     * which returns a u64 to allow for larger than memory uploads.
+     */
+    let sz = size as usize;
+    unsafe { luw_mem_writep_data(ctx, src, sz) }
 }
 
 pub fn uwr_req_buf_append(ctx: *mut luw_ctx_t, src: *const u8) {

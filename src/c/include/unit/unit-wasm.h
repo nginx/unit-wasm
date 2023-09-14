@@ -109,16 +109,18 @@ struct luw_req {
 	u32 server_name_off;
 	u32 server_name_len;
 
-	u32 content_off;
-	u32 content_len;
+	u64 content_len;
+	u64 total_content_sent;
 	u32 content_sent;
-	u32 total_content_sent;
+	u32 content_off;
 
 	u32 request_size;
 
 	u32 nr_fields;
 
 	u32 tls;
+
+	char __pad[4];
 
 	struct luw_hdr_field fields[];
 };
@@ -220,9 +222,9 @@ extern const char *luw_get_http_local_addr(const luw_ctx_t *ctx);
 extern const char *luw_get_http_local_port(const luw_ctx_t *ctx);
 extern const char *luw_get_http_server_name(const luw_ctx_t *ctx);
 extern const u8 *luw_get_http_content(const luw_ctx_t *ctx);
-extern size_t luw_get_http_content_len(const luw_ctx_t *ctx);
+extern u64 luw_get_http_content_len(const luw_ctx_t *ctx);
 extern size_t luw_get_http_content_sent(const luw_ctx_t *ctx);
-extern size_t luw_get_http_total_content_sent(const luw_ctx_t *ctx);
+extern u64 luw_get_http_total_content_sent(const luw_ctx_t *ctx);
 extern bool luw_http_is_tls(const luw_ctx_t *ctx);
 extern void luw_http_hdr_iter(luw_ctx_t *ctx,
 			      bool (*luw_http_hdr_iter_func)(luw_ctx_t *ctx,

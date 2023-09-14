@@ -53,7 +53,7 @@ static int upload_reflector(luw_ctx_t *ctx)
 		const char *ct = luw_http_hdr_get_value(ctx, "Content-Type");
 		char clen[32];
 
-		snprintf(clen, sizeof(clen), "%lu",
+		snprintf(clen, sizeof(clen), "%llu",
 			 luw_get_http_content_len(ctx));
 
 		luw_http_init_headers(ctx, 2, 0);
