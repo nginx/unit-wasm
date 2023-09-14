@@ -304,6 +304,17 @@ void luw_req_buf_append(luw_ctx_t *ctx, const u8 *src)
 	ctx->req->total_content_sent = req->total_content_sent;
 }
 
+/* Copy data from the request to the previously setup request_buffer. */
+void luw_req_buf_copy(luw_ctx_t *ctx, const u8 *src)
+{
+	struct luw_req *req = (struct luw_req *)src;
+
+	memcpy(ctx->reqp + ctx->req->content_off, src + req->content_off,
+	       req->request_size);
+	ctx->req->content_sent = req->content_sent;
+	ctx->req->total_content_sent = req->total_content_sent;
+}
+
 /*
  * Convenience function to fill the response buffer with data from
  * the request buffer.

@@ -238,6 +238,7 @@ extern size_t luw_get_response_data_size(const luw_ctx_t *ctx);
 extern int luw_mem_writep(luw_ctx_t *ctx, const char *fmt, ...);
 extern size_t luw_mem_writep_data(luw_ctx_t *ctx, const u8 *src, size_t size);
 extern void luw_req_buf_append(luw_ctx_t *ctx, const u8 *src);
+extern void luw_req_buf_copy(luw_ctx_t *ctx, const u8 *src);
 extern size_t luw_mem_fill_buf_from_req(luw_ctx_t *ctx, size_t from);
 extern void luw_mem_reset(luw_ctx_t *ctx);
 extern void luw_http_set_response_status(luw_http_status_t status);
