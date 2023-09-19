@@ -65,7 +65,8 @@ pub fn upload_reflector(ctx: *mut luw_ctx_t) -> i32 {
 
     uwr_http_send_response(ctx);
 
-    if unsafe { TOTAL_RESPONSE_SENT == uwr_get_http_content_len(ctx) } {
+    if unsafe { TOTAL_RESPONSE_SENT == uwr_get_http_content_len(ctx) as usize }
+    {
         // Tell Unit no more data to send
         uwr_http_response_end();
     }
