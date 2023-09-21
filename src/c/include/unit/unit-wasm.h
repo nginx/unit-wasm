@@ -84,6 +84,15 @@ typedef enum {
 	LUW_HTTP_GATEWAY_TIMEOUT			= 504,
 } luw_http_status_t;
 
+#if !defined(__DEFINED_ssize_t)
+/*
+ * Match the typedef from wasm32-wasi/include/bits/alltypes.h
+ * without requiring the wasi-sysroot for building the rust
+ * stuff.
+ */
+typedef long	  ssize_t;
+#endif
+
 struct luw_hdr_field {
 	u32 name_off;
 	u32 name_len;
@@ -239,6 +248,7 @@ extern int luw_mem_writep(luw_ctx_t *ctx, const char *fmt, ...);
 extern size_t luw_mem_writep_data(luw_ctx_t *ctx, const u8 *src, size_t size);
 extern void luw_req_buf_append(luw_ctx_t *ctx, const u8 *src);
 extern void luw_req_buf_copy(luw_ctx_t *ctx, const u8 *src);
+extern ssize_t luw_mem_splice_file(const u8 *src, int fd);
 extern size_t luw_mem_fill_buf_from_req(luw_ctx_t *ctx, size_t from);
 extern void luw_mem_reset(luw_ctx_t *ctx);
 extern void luw_http_set_response_status(luw_http_status_t status);

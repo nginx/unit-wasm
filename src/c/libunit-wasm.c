@@ -14,9 +14,15 @@
 #include <stdarg.h>
 #include <string.h>
 #include <strings.h>
+#include <unistd.h>
 #include <errno.h>
 
 #include "unit/unit-wasm.h"
+
+#define MIN(a, b) \
+        ({ __typeof__(a) _a = (a); \
+           __typeof__ (b) _b = (b); \
+         _a < _b ? _a : _b; })
 
 /*
  * Some handlers are required some are optional.
@@ -313,6 +319,29 @@ void luw_req_buf_copy(luw_ctx_t *ctx, const u8 *src)
 	       req->request_size);
 	ctx->req->content_sent = req->content_sent;
 	ctx->req->total_content_sent = req->total_content_sent;
+}
+
+/* Copy data from the request to a given file-descriptor. */
+ssize_t luw_mem_splice_file(const u8 *src, int fd)
+{
+	struct luw_req *req = (struct luw_req *)src;
+	size_t written = 0;
+	size_t bytes_splice = 1024 * 128; /* It's what cp(1) uses */
+
+	do {
+		ssize_t bytes_wrote;
+
+		bytes_splice = MIN(bytes_splice, req->content_sent - written);
+
+		bytes_wrote = write(fd, src + req->content_off + written,
+				    bytes_splice);
+		if (bytes_wrote == -1)
+			return -1;
+
+		written += bytes_wrote;
+	} while (written < req->content_sent);
+
+	return written;
 }
 
 /*
