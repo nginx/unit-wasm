@@ -48,6 +48,8 @@ C Library for creating WebAssembly modules for use with NGINX Unit.
   * [luw_mem_writep](#luw_mem_writep)
   * [luw_mem_writep_data](#luw_mem_writep_data)
   * [luw_req_buf_append](#luw_req_buf_append)
+  * [luw_req_buf_copy](#luw_req_buf_copy)
+  * [luw_mem_splice_file](#luw_mem_splice_file)
   * [luw_mem_fill_buf_from_req](#luw_mem_fill_buf_from_req)
   * [luw_mem_reset](#luw_mem_reset)
   * [luw_http_set_response_status](#luw_http_set_response_status)
@@ -207,16 +209,18 @@ struct luw_req {
         u32 server_name_off;
         u32 server_name_len;
 
-        u32 content_off;
-        u32 content_len;
+        u64 content_len;
+        u64 total_content_sent;
         u32 content_sent;
-        u32 total_content_sent;
+        u32 content_off;
 
         u32 request_size;
 
         u32 nr_fields;
 
         u32 tls;
+
+        char __pad[4];
 
         struct luw_hdr_field fields[];
 };
@@ -701,11 +705,12 @@ This function returns a pointer to the start of the request body.
 ### luw_get_http_content_len
 
 ```C
-size_t luw_get_http_content_len(const luw_ctx_t *ctx);
+u64 luw_get_http_content_len(const luw_ctx_t *ctx);
 ```
 
 This function returns the size of the overall content. I.e Content-Length.
 
+Prior to version 0.3.0 it returned a size_t
 
 ### luw_get_http_content_sent
 
@@ -720,14 +725,14 @@ split over several calls to luw_request_handler().
 ### luw_get_http_total_content_sent
 
 ```C
-size_t luw_get_http_total_content_sent(const luw_ctx_t *ctx);
+u64 luw_get_http_total_content_sent(const luw_ctx_t *ctx);
 ```
 
 This function returns the total length of the content that was sent to the
 WebAssembly module so far. Remember, a single HTTP request may be split over
 several calls to luw_request_handler().
 
-_Version: 0.2.0_
+_Version: 0.2.0_ Prior to 0.3.0 it returned a size_t
 
 ### luw_http_is_tls
 
@@ -866,6 +871,93 @@ int luw_request_handler(u8 *addr)
         return 0;
 }
 ```
+
+### luw_req_buf_copy
+
+```C
+void luw_req_buf_copy(luw_ctx_t *ctx, const u8 *src);
+```
+
+This function is analogous to [luw_req_buf_append](#luw_req_buf_append) but
+rather than appending the request data contained in _src_ to the previously
+setup *request_buffer* with luw_set_req_buf(), it simply overwrites what's
+currently there.
+
+This function could be used to handle large requests/uploads that you want to
+save out to disk or some such and can't buffer it all in memory.
+
+Example
+
+```C
+int luw_request_handler(u8 *addr)
+{
+        const u8 *buf;
+        ssize_t bytes_wrote;
+
+        if (total_bytes_wrote == 0) {
+                luw_init_ctx(&ctx, addr, 0);
+                luw_set_req_buf(&ctx, &request_buf, LUW_SRB_NONE);
+
+                fd = open("/var/tmp/large-file.dat", O_CREAT|O_TRUNC|O_WRONLY,
+                          0666);
+        } else {
+                luw_req_buf_copy(&ctx, addr);
+        }
+
+        buf = luw_get_http_content(&ctx);
+        bytes_wrote = write(fd, buf, luw_get_http_content_sent(&ctx));
+        if (bytes_wrote == -1)
+                return -1;
+
+        total_bytes_wrote += bytes_wrote;
+        if (total_bytes_wrote == luw_get_http_content_len(&ctx))
+                luw_http_response_end();
+
+        return 0;
+}
+```
+
+_Version: 0.3.0_
+
+### luw_mem_splice_file
+
+```C
+ssize_t luw_mem_splice_file(const u8 *src, int fd);
+```
+
+This function write(2)'s the request data directly from the shared memory
+(_src_) to the file represented by the given file-descriptor (_fd_).
+
+This can be used as an alternative to [luw_req_buf_copy](#luw_req_buf_copy)
+and avoids an extra copying of the request data.
+
+Example
+
+```C
+int luw_request_handler(u8 *addr) {
+        ssize_t bytes_wrote;
+
+        if (total_bytes_wrote == 0) {
+                luw_init_ctx(&ctx, addr, 0);
+                luw_set_req_buf(&ctx, &request_buf, LUW_SRB_NONE);
+
+                fd = open("/var/tmp/large-file.dat", O_CREAT|O_TRUNC|O_WRONLY,
+                          0666);
+        }
+
+        bytes_wrote = luw_mem_splice_file(addr, fd);
+        if (bytes_wrote == -1)
+                return -1;
+
+        total_bytes_wrote += bytes_wrote;
+        if (total_bytes_wrote == luw_get_http_content_len(&ctx))
+                luw_http_response_end();
+
+        return 0;
+}
+```
+
+_Version: 0.3.0_
 
 ### luw_mem_fill_buf_from_req
 
