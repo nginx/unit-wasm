@@ -76,6 +76,8 @@ and there isn't a real need to create wrappers specifically for them.
   * [uwr_get_response_data_size](#uwr_get_response_data_size)
   * [uwr_mem_write_buf](#uwr_mem_write_buf)
   * [uwr_req_buf_append](#uwr_req_buf_append)
+  * [uwr_req_buf_copy](#uwr_req_buf_copy)
+  * [uwr_mem_splice_file](#uwr_mem_splice_file)
   * [uwr_mem_fill_buf_from_req](#uwr_mem_fill_buf_from_req)
   * [uwr_mem_reset](#uwr_mem_reset)
   * [uwr_http_set_response_status](#uwr_http_set_response_status)
@@ -667,11 +669,12 @@ _Version: 0.2.0_
 ### uwr_get_http_content_len
 
 ```Rust
-pub fn uwr_get_http_content_len(ctx: *const luw_ctx_t) -> usize;
+pub fn uwr_get_http_content_len(ctx: *const luw_ctx_t) -> u64;
 ```
 
 This function returns the size of the overall content. I.e Content-Length.
 
+Prior to version 0.3.0 it returned a usize
 
 ### uwr_get_http_content_sent
 
@@ -686,14 +689,14 @@ split over several calls to luw_request_handler().
 ### uwr_get_http_total_content_sent
 
 ```Rust
-pub fn uwr_get_http_total_content_sent(ctx: *const luw_ctx_t) -> usize;
+pub fn uwr_get_http_total_content_sent(ctx: *const luw_ctx_t) -> u64;
 ```
 
 This function returns the total length of the content that was sent to the
 WebAssembly module so far. Remember, a single HTTP request may be split over
 several calls to luw_request_handler().
 
-_Version: 0.2.0_
+_Version: 0.2.0_ Prior to 0.3.0 it returned a usize
 
 ### uwr_http_is_tls
 
@@ -831,6 +834,70 @@ pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
     }
 
     upload_reflector(ctx);
+
+    return 0;
+}
+```
+
+### uwr_req_buf_copy
+
+```Rust
+pub fn uwr_req_buf_copy(ctx: *mut luw_ctx_t, src: *const u8);
+```
+
+This function is analogous to [uwr_req_buf_append](#uwr_req_buf_append) but
+rather than appending the request data contained in _src_ to the previously
+setup *request_buffer* with uwr_set_req_buf(), it simply overwrites what's
+currently there.
+
+This function could be used to handle large requests/uploads that you want to
+save out to disk or some such and can't buffer it all in memory.
+
+### uwr_mem_splice_file
+
+```Rust
+pub fn uwr_mem_splice_file(src: *const u8, f: &mut File) -> isize;
+```
+This function write(2)'s the request data directly from the shared memory
+(_src_) to the file represented by the given _File_ object (_f_).
+
+This can be used as an alternative to [uwr_req_buf_copy](#uwr_req_buf_copy)
+and avoids an extra copying of the request data.
+
+Example
+
+```Rust
+pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
+    let ctx: *mut luw_ctx_t = unsafe { &mut CTX };
+    let mut f;
+    let bytes_wrote: isize;
+    let mut total = unsafe { TOTAL_BYTES_WROTE };
+
+    if total == 0 {
+        uwr_init_ctx(ctx, addr, 0);
+        uwr_set_req_buf(ctx, unsafe { &mut REQUEST_BUF }, LUW_SRB_NONE);
+
+        f = File::create("/var/tmp/large-file.dat").unwrap();
+    } else {
+        f = File::options()
+            .append(true)
+            .open("/var/tmp/large-file.dat")
+            .unwrap();
+    }
+
+    bytes_wrote = uwr_mem_splice_file(addr, &mut f);
+    if bytes_wrote == -1 {
+        return -1;
+    }
+
+    total += bytes_wrote as u64;
+    if total == uwr_get_http_content_len(ctx) {
+        total = 0;
+
+        uwr_http_response_end();
+    }
+
+    unsafe { TOTAL_BYTES_WROTE = total };
 
     return 0;
 }
