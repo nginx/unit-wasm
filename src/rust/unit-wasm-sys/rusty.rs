@@ -8,6 +8,8 @@
 use std::ffi::c_char;
 use std::ffi::c_void;
 use std::ffi::CStr;
+use std::fs::File;
+use std::os::fd::{AsRawFd, RawFd};
 use std::ptr::null_mut;
 use std::slice;
 use std::str;
@@ -173,6 +175,17 @@ pub fn uwr_req_buf_append(ctx: *mut luw_ctx_t, src: *const u8) {
     unsafe {
         luw_req_buf_append(ctx, src);
     }
+}
+
+pub fn uwr_req_buf_copy(ctx: *mut luw_ctx_t, src: *const u8) {
+    unsafe {
+        luw_req_buf_copy(ctx, src);
+    }
+}
+
+pub fn uwr_mem_splice_file(src: *const u8, f: &mut File) -> isize {
+    let fd: RawFd = f.as_raw_fd();
+    unsafe { luw_mem_splice_file(src, fd) }
 }
 
 pub fn uwr_mem_fill_buf_from_req(ctx: *mut luw_ctx_t, from: usize) -> usize {
