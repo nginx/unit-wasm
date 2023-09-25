@@ -12,7 +12,9 @@ luw_deps = $(LUW_SRCDIR)/libunit-wasm.a \
 
 examples: examples-luw
 
-examples-luw: luw-echo-request.wasm luw-upload-reflector.wasm
+examples-luw: luw-echo-request.wasm \
+	      luw-upload-reflector.wasm \
+	      large-upload.wasm
 
 examples-raw: echo-request-raw.wasm upload-reflector-raw.wasm
 
@@ -35,6 +37,10 @@ echo-request-raw.wasm: echo-request-raw.c unit-wasm-raw.o
 upload-reflector-raw.wasm: upload-reflector-raw.c unit-wasm-raw.o
 	$(PP_CCLNK) $(SDIR)/$@
 	$(v)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< unit-wasm-raw.o
+
+large-upload.wasm: large-upload.c $(luw_deps)
+	$(PP_CCLNK) $(SDIR)/$@
+	$(v)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< $(LIBS)
 
 clean:
 	rm -f *.wasm *.o *.gch

@@ -264,7 +264,7 @@ repository root for more details) but will instead assume you already have a
 Unit with the WebAssembly language module already running, perhaps installed
 via a package.
 
-Create the following Unit config
+Create the following Unit config (editing the module paths as appropriate)
 
 ```JSON
 {
@@ -276,7 +276,7 @@ Create the following Unit config
 
     "settings": {
         "http": {
-            "max_body_size": 1073741824
+            "max_body_size": 8589934592
         }
     },
 
@@ -299,6 +299,14 @@ Create the following Unit config
         },
         {
             "match": {
+                "uri": "/large-upload*"
+            },
+            "action": {
+                "pass": "applications/large-upload"
+            }
+        },
+        {
+            "match": {
                 "uri": "/rust-echo*"
             },
             "action": {
@@ -315,7 +323,15 @@ Create the following Unit config
         },
         {
             "match": {
-                "uri": "/hello-world*"
+                "uri": "/rust-large-upload*"
+            },
+            "action": {
+                "pass": "applications/rust-large-upload"
+            }
+        },
+        {
+            "match": {
+                "uri": "/rust-hello-world*"
             },
             "action": {
                 "pass": "applications/rust-hello-world"
@@ -342,6 +358,21 @@ Create the following Unit config
             "request_end_handler": "luw_request_end_handler",
             "response_end_handler": "luw_response_end_handler"
         },
+        "large-upload": {
+            "type": "wasm",
+            "module": "/path/to/unit-wasm/examples/c/large-upload.wasm",
+            "request_handler": "luw_request_handler",
+            "malloc_handler": "luw_malloc_handler",
+            "free_handler": "luw_free_handler",
+            "module_init_handler": "luw_module_init_handler",
+            "module_end_handler": "luw_module_end_handler",
+            "response_end_handler": "luw_response_end_handler",
+            "access": {
+                "filesystem": [
+                    "/var/tmp"
+                ]
+            }
+        },
         "rust-echo-request": {
             "type": "wasm",
             "module": "/path/to/unit-wasm/examples/rust/echo-request/target/wasm32-wasi/debug/rust_echo_request.wasm",
@@ -359,6 +390,21 @@ Create the following Unit config
             "free_handler": "luw_free_handler",
             "request_end_handler": "uwr_request_end_handler",
             "response_end_handler": "uwr_response_end_handler"
+        },
+        "rust-large-upload": {
+            "type": "wasm",
+            "module": "/path/to/src/unit-wasm/examples/rust/large-upload/target/wasm32-wasi/debug/rust_large_upload.wasm",
+            "request_handler": "uwr_request_handler",
+            "malloc_handler": "luw_malloc_handler",
+            "free_handler": "luw_free_handler",
+            "module_init_handler": "uwr_module_init_handler",
+            "module_end_handler": "uwr_module_end_handler",
+            "response_end_handler": "uwr_response_end_handler",
+            "access": {
+                "filesystem": [
+                    "/var/tmp"
+                ]
+            }
         },
         "rust-hello-world": {
             "type": "wasm",
