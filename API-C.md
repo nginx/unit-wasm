@@ -328,7 +328,7 @@ internal API has failed or an OS level error occurred, then you can simply
 return _-1_, _if_ you have haven't already _sent_ any response or headers.
 
 You can still return 0 _and_ set the HTTP response status to 500 using
-[luw_http_set_resp_status](#luw_http_set_resp_status).
+[luw_http_set_response_status](#luw_http_set_response_status).
 
 #### luw_malloc_handler
 
