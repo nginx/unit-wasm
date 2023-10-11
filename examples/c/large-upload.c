@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 
 /* examples/c/large-upload.c - Example of handling request payload larger
- *			       larger than the shared memory
+ *			       than the shared memory
  *
  * Copyright (C) Andrew Clayton
  * Copyright (C) F5, Inc.
