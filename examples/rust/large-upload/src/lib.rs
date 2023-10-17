@@ -16,18 +16,18 @@ static mut REQUEST_BUF: *mut u8 = null_mut();
 static mut TOTAL_BYTES_WROTE: u64 = 0;
 
 #[no_mangle]
-pub extern "C" fn uwr_module_end_handler() {
-    unsafe { uwr_free(REQUEST_BUF); }
+pub unsafe extern "C" fn uwr_module_end_handler() {
+    uwr_free(REQUEST_BUF);
 }
 
 #[no_mangle]
-pub extern "C" fn uwr_module_init_handler() {
-    unsafe { REQUEST_BUF = uwr_malloc(uwr_mem_get_init_size()); }
+pub unsafe extern "C" fn uwr_module_init_handler() {
+    REQUEST_BUF = uwr_malloc(uwr_mem_get_init_size());
 }
 
 #[no_mangle]
-pub extern "C" fn uwr_response_end_handler() {
-    unsafe { TOTAL_BYTES_WROTE = 0; }
+pub unsafe extern "C" fn uwr_response_end_handler() {
+    TOTAL_BYTES_WROTE = 0;
 }
 
 #[no_mangle]

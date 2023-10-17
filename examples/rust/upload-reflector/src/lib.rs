@@ -18,22 +18,18 @@ static mut TOTAL_RESPONSE_SENT: usize = 0;
 static mut REQUEST_BUF: *mut u8 = null_mut();
 
 #[no_mangle]
-pub extern "C" fn uwr_response_end_handler() {
-    unsafe {
-        TOTAL_RESPONSE_SENT = 0;
-    }
+pub unsafe extern "C" fn uwr_response_end_handler() {
+    TOTAL_RESPONSE_SENT = 0;
 }
 
 #[no_mangle]
-pub extern "C" fn uwr_request_end_handler() {
-    unsafe {
-        if REQUEST_BUF.is_null() {
-            return;
-        }
-
-        uwr_free(REQUEST_BUF);
-        REQUEST_BUF = null_mut();
+pub unsafe extern "C" fn uwr_request_end_handler() {
+    if REQUEST_BUF.is_null() {
+        return;
     }
+
+    uwr_free(REQUEST_BUF);
+    REQUEST_BUF = null_mut();
 }
 
 pub fn upload_reflector(ctx: *mut luw_ctx_t) -> i32 {

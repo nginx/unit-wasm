@@ -17,17 +17,13 @@ use std::ptr::null_mut;
 static mut REQUEST_BUF: *mut u8 = null_mut();
 
 #[no_mangle]
-pub extern "C" fn uwr_module_end_handler() {
-    unsafe {
-        uwr_free(REQUEST_BUF);
-    }
+pub unsafe extern "C" fn uwr_module_end_handler() {
+    uwr_free(REQUEST_BUF);
 }
 
 #[no_mangle]
-pub extern "C" fn uwr_module_init_handler() {
-    unsafe {
-        REQUEST_BUF = uwr_malloc(uwr_mem_get_init_size());
-    }
+pub unsafe extern "C" fn uwr_module_init_handler() {
+    REQUEST_BUF = uwr_malloc(uwr_mem_get_init_size());
 }
 
 pub extern "C" fn hdr_iter_func(
