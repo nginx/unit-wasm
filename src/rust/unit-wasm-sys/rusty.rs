@@ -51,83 +51,79 @@ pub const fn UWR_CTX_INITIALIZER() -> luw_ctx_t {
     }
 }
 
-pub fn uwr_init_ctx(ctx: *mut luw_ctx_t, addr: *mut u8, offset: usize) {
-    unsafe {
-        luw_init_ctx(ctx, addr, offset);
-    }
+pub unsafe fn uwr_init_ctx(ctx: *mut luw_ctx_t, addr: *mut u8, offset: usize) {
+    luw_init_ctx(ctx, addr, offset);
 }
 
-pub fn uwr_set_req_buf(
+pub unsafe fn uwr_set_req_buf(
     ctx: *mut luw_ctx_t,
     buf: *mut *mut u8,
     flags: u32,
 ) -> i32 {
-    unsafe { luw_set_req_buf(ctx, buf, flags) }
+    luw_set_req_buf(ctx, buf, flags)
 }
 
-pub fn uwr_get_http_path(ctx: *const luw_ctx_t) -> &'static str {
+pub unsafe fn uwr_get_http_path(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_path(ctx))
 }
 
-pub fn uwr_get_http_method(ctx: *const luw_ctx_t) -> &'static str {
+pub unsafe fn uwr_get_http_method(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_method(ctx))
 }
 
-pub fn uwr_get_http_version(ctx: *const luw_ctx_t) -> &'static str {
+pub unsafe fn uwr_get_http_version(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_version(ctx))
 }
 
-pub fn uwr_get_http_query(ctx: *const luw_ctx_t) -> &'static str {
+pub unsafe fn uwr_get_http_query(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_query(ctx))
 }
 
-pub fn uwr_get_http_remote(ctx: *const luw_ctx_t) -> &'static str {
+pub unsafe fn uwr_get_http_remote(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_remote(ctx))
 }
 
-pub fn uwr_get_http_local_addr(ctx: *const luw_ctx_t) -> &'static str {
+pub unsafe fn uwr_get_http_local_addr(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_local_addr(ctx))
 }
 
-pub fn uwr_get_http_local_port(ctx: *const luw_ctx_t) -> &'static str {
+pub unsafe fn uwr_get_http_local_port(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_local_port(ctx))
 }
 
-pub fn uwr_get_http_server_name(ctx: *const luw_ctx_t) -> &'static str {
+pub unsafe fn uwr_get_http_server_name(ctx: *const luw_ctx_t) -> &'static str {
     C2S!(luw_get_http_server_name(ctx))
 }
 
-pub fn uwr_get_http_content_len(ctx: *const luw_ctx_t) -> u64 {
-    unsafe { luw_get_http_content_len(ctx) }
+pub unsafe fn uwr_get_http_content_len(ctx: *const luw_ctx_t) -> u64 {
+    luw_get_http_content_len(ctx)
 }
 
-pub fn uwr_get_http_content_sent(ctx: *const luw_ctx_t) -> usize {
-    unsafe { luw_get_http_content_sent(ctx) }
+pub unsafe fn uwr_get_http_content_sent(ctx: *const luw_ctx_t) -> usize {
+    luw_get_http_content_sent(ctx)
 }
 
-pub fn uwr_get_http_total_content_sent(ctx: *const luw_ctx_t) -> u64 {
-    unsafe { luw_get_http_total_content_sent(ctx) }
+pub unsafe fn uwr_get_http_total_content_sent(ctx: *const luw_ctx_t) -> u64 {
+    luw_get_http_total_content_sent(ctx)
 }
 
-pub fn uwr_get_http_content(ctx: *const luw_ctx_t) -> *const u8 {
-    unsafe { luw_get_http_content(ctx) }
+pub unsafe fn uwr_get_http_content(ctx: *const luw_ctx_t) -> *const u8 {
+    luw_get_http_content(ctx)
 }
 
-pub fn uwr_get_http_content_str(ctx: *const luw_ctx_t) -> &'static str {
-    unsafe {
-        let slice = slice::from_raw_parts(
-            uwr_get_http_content(ctx),
-            uwr_get_http_total_content_sent(ctx).try_into().unwrap(),
-        );
-        str::from_utf8(slice).unwrap()
-    }
+pub unsafe fn uwr_get_http_content_str(ctx: *const luw_ctx_t) -> &'static str {
+    let slice = slice::from_raw_parts(
+        uwr_get_http_content(ctx),
+        uwr_get_http_total_content_sent(ctx).try_into().unwrap(),
+    );
+    str::from_utf8(slice).unwrap()
 }
 
-pub fn uwr_http_is_tls(ctx: *const luw_ctx_t) -> bool {
-    unsafe { luw_http_is_tls(ctx) }
+pub unsafe fn uwr_http_is_tls(ctx: *const luw_ctx_t) -> bool {
+    luw_http_is_tls(ctx)
 }
 
-pub fn uwr_http_hdr_iter(
+pub unsafe fn uwr_http_hdr_iter(
     ctx: *mut luw_ctx_t,
     luw_http_hdr_iter_func: ::std::option::Option<
         unsafe extern "C" fn(
@@ -139,25 +135,25 @@ pub fn uwr_http_hdr_iter(
     >,
     user_data: *mut c_void,
 ) {
-    unsafe { luw_http_hdr_iter(ctx, luw_http_hdr_iter_func, user_data) }
+    luw_http_hdr_iter(ctx, luw_http_hdr_iter_func, user_data)
 }
 
-pub fn uwr_http_hdr_get_value(
+pub unsafe fn uwr_http_hdr_get_value(
     ctx: *const luw_ctx_t,
     hdr: &str,
 ) -> &'static str {
     C2S!(luw_http_hdr_get_value(ctx, S2C!(hdr).as_ptr() as *const i8))
 }
 
-pub fn uwr_get_response_data_size(ctx: *const luw_ctx_t) -> usize {
-    unsafe { luw_get_response_data_size(ctx) }
+pub unsafe fn uwr_get_response_data_size(ctx: *const luw_ctx_t) -> usize {
+    luw_get_response_data_size(ctx)
 }
 
-pub fn uwr_mem_write_str(ctx: *mut luw_ctx_t, src: &str) -> usize {
-    unsafe { luw_mem_writep_data(ctx, src.as_ptr(), src.len()) }
+pub unsafe fn uwr_mem_write_str(ctx: *mut luw_ctx_t, src: &str) -> usize {
+    luw_mem_writep_data(ctx, src.as_ptr(), src.len())
 }
 
-pub fn uwr_mem_write_buf(
+pub unsafe fn uwr_mem_write_buf(
     ctx: *mut luw_ctx_t,
     src: *const u8,
     size: u64,
@@ -168,69 +164,71 @@ pub fn uwr_mem_write_buf(
      * which returns a u64 to allow for larger than memory uploads.
      */
     let sz = size as usize;
-    unsafe { luw_mem_writep_data(ctx, src, sz) }
+
+    luw_mem_writep_data(ctx, src, sz)
 }
 
-pub fn uwr_req_buf_append(ctx: *mut luw_ctx_t, src: *const u8) {
-    unsafe {
-        luw_req_buf_append(ctx, src);
-    }
+pub unsafe fn uwr_req_buf_append(ctx: *mut luw_ctx_t, src: *const u8) {
+    luw_req_buf_append(ctx, src);
 }
 
-pub fn uwr_req_buf_copy(ctx: *mut luw_ctx_t, src: *const u8) {
-    unsafe {
-        luw_req_buf_copy(ctx, src);
-    }
+pub unsafe fn uwr_req_buf_copy(ctx: *mut luw_ctx_t, src: *const u8) {
+    luw_req_buf_copy(ctx, src);
 }
 
-pub fn uwr_mem_splice_file(src: *const u8, f: &mut File) -> isize {
+pub unsafe fn uwr_mem_splice_file(src: *const u8, f: &mut File) -> isize {
     let fd: RawFd = f.as_raw_fd();
-    unsafe { luw_mem_splice_file(src, fd) }
+
+    luw_mem_splice_file(src, fd)
 }
 
-pub fn uwr_mem_fill_buf_from_req(ctx: *mut luw_ctx_t, from: usize) -> usize {
-    unsafe { luw_mem_fill_buf_from_req(ctx, from) }
+pub unsafe fn uwr_mem_fill_buf_from_req(
+    ctx: *mut luw_ctx_t,
+    from: usize,
+) -> usize {
+    luw_mem_fill_buf_from_req(ctx, from)
 }
 
-pub fn uwr_luw_mem_reset(ctx: *mut luw_ctx_t) {
-    unsafe {
-        luw_mem_reset(ctx);
-    }
+pub unsafe fn uwr_luw_mem_reset(ctx: *mut luw_ctx_t) {
+    luw_mem_reset(ctx);
 }
 
-pub fn uwr_http_set_response_status(status: luw_http_status_t) {
-    unsafe {
-        luw_http_set_response_status(status);
-    }
+pub unsafe fn uwr_http_set_response_status(status: luw_http_status_t) {
+    luw_http_set_response_status(status);
 }
 
-pub fn uwr_http_send_response(ctx: *const luw_ctx_t) {
-    unsafe {
-        luw_http_send_response(ctx);
-    }
+pub unsafe fn uwr_http_send_response(ctx: *const luw_ctx_t) {
+    luw_http_send_response(ctx);
 }
 
-pub fn uwr_http_init_headers(ctx: *mut luw_ctx_t, nr: usize, offset: usize) {
-    unsafe {
-        luw_http_init_headers(ctx, nr, offset);
-    }
+pub unsafe fn uwr_http_init_headers(
+    ctx: *mut luw_ctx_t,
+    nr: usize,
+    offset: usize,
+) {
+    luw_http_init_headers(ctx, nr, offset);
 }
 
-pub fn uwr_http_add_header(ctx: *mut luw_ctx_t, name: &str, value: &str) {
-    unsafe {
-        luw_http_add_header(
-            ctx,
-            S2C!(name).as_ptr() as *const i8,
-            S2C!(value).as_ptr() as *const i8,
-        );
-    }
+pub unsafe fn uwr_http_add_header(
+    ctx: *mut luw_ctx_t,
+    name: &str,
+    value: &str,
+) {
+    luw_http_add_header(
+        ctx,
+        S2C!(name).as_ptr() as *const i8,
+        S2C!(value).as_ptr() as *const i8,
+    );
 }
 
-pub fn uwr_http_add_header_content_type(ctx: *mut luw_ctx_t, ctype: &str) {
+pub unsafe fn uwr_http_add_header_content_type(
+    ctx: *mut luw_ctx_t,
+    ctype: &str,
+) {
     uwr_http_add_header(ctx, "Content-Type", ctype);
 }
 
-pub fn uwr_http_add_header_content_len(ctx: *mut luw_ctx_t) {
+pub unsafe fn uwr_http_add_header_content_len(ctx: *mut luw_ctx_t) {
     uwr_http_add_header(
         ctx,
         "Content-Length",
@@ -238,28 +236,22 @@ pub fn uwr_http_add_header_content_len(ctx: *mut luw_ctx_t) {
     );
 }
 
-pub fn uwr_http_send_headers(ctx: *const luw_ctx_t) {
-    unsafe {
-        luw_http_send_headers(ctx);
-    }
+pub unsafe fn uwr_http_send_headers(ctx: *const luw_ctx_t) {
+    luw_http_send_headers(ctx);
 }
 
-pub fn uwr_http_response_end() {
-    unsafe {
-        luw_http_response_end();
-    }
+pub unsafe fn uwr_http_response_end() {
+    luw_http_response_end();
 }
 
-pub fn uwr_mem_get_init_size() -> u32 {
-    unsafe { luw_mem_get_init_size() }
+pub unsafe fn uwr_mem_get_init_size() -> u32 {
+    luw_mem_get_init_size()
 }
 
-pub fn uwr_malloc(size: u32) -> *mut u8 {
-    unsafe { luw_malloc(size as usize) as *mut u8 }
+pub unsafe fn uwr_malloc(size: u32) -> *mut u8 {
+    luw_malloc(size as usize) as *mut u8
 }
 
-pub fn uwr_free(ptr: *mut u8) {
-    unsafe {
-        luw_free(ptr as *mut c_void);
-    }
+pub unsafe fn uwr_free(ptr: *mut u8) {
+    luw_free(ptr as *mut c_void);
 }

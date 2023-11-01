@@ -379,7 +379,7 @@ let ctx = &mut UWR_CTX_INITIALIZER();
 ### uwr_init_ctx
 
 ```Rust
-pub fn uwr_init_ctx(ctx: *mut luw_ctx_t, addr: *mut u8, offset: usize);
+pub unsafe fn uwr_init_ctx(ctx: *mut luw_ctx_t, addr: *mut u8, offset: usize);
 ```
 
 This function sets up a *luw_ctx_t* context structure, this contains stuff
@@ -444,7 +444,7 @@ pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
 ### uwr_set_req_buf
 
 ```Rust
-pub fn uwr_set_req_buf(
+pub unsafe fn uwr_set_req_buf(
     ctx: *mut luw_ctx_t,
     buf: *mut *mut u8,
     flags: u32,
@@ -528,7 +528,7 @@ demo module. For a simpler example see the
 ### uwr_get_http_path
 
 ```Rust
-pub fn uwr_get_http_path(ctx: *const luw_ctx_t) -> &'static str;
+pub unsafe fn uwr_get_http_path(ctx: *const luw_ctx_t) -> &'static str;
 ```
 
 This function returns a pointer to the HTTP request path.
@@ -547,7 +547,7 @@ this function will return
 ### uwr_get_http_method
 
 ```Rust
-pub fn uwr_get_http_method(ctx: *const luw_ctx_t) -> &'static str;
+pub unsafe fn uwr_get_http_method(ctx: *const luw_ctx_t) -> &'static str;
 ```
 
 This function returns a pointer to the HTTP method.
@@ -561,7 +561,7 @@ GET
 ### uwr_get_http_version
 
 ```Rust
-pub fn uwr_get_http_version(ctx: *const luw_ctx_t) -> &'static str;
+pub unsafe fn uwr_get_http_version(ctx: *const luw_ctx_t) -> &'static str;
 ```
 
 This function returns a pointer to the HTTP version.
@@ -575,7 +575,7 @@ E.g
 ### uwr_get_http_query
 
 ```Rust
-pub fn uwr_get_http_query(ctx: *const luw_ctx_t) -> &'static str;
+pub unsafe fn uwr_get_http_query(ctx: *const luw_ctx_t) -> &'static str;
 ```
 
 This function returns a pointer to the query string (empty string for no query
@@ -595,7 +595,7 @@ q=a
 ### uwr_get_http_remote
 
 ```Rust
-pub fn uwr_get_http_remote(ctx: *const luw_ctx_t) -> &'static str;
+pub unsafe fn uwr_get_http_remote(ctx: *const luw_ctx_t) -> &'static str;
 ```
 
 This function returns a pointer to the remote/client/peer address.
@@ -609,7 +609,7 @@ E.g
 ### uwr_get_http_local_addr
 
 ```Rust
-pub fn uwr_get_http_local_addr(ctx: *const luw_ctx_t) -> &'static str;
+pub unsafe fn uwr_get_http_local_addr(ctx: *const luw_ctx_t) -> &'static str;
 ```
 
 This function returns a pointer to the local/server address.
@@ -623,7 +623,7 @@ E.g
 ### uwr_get_http_local_port
 
 ```Rust
-pub fn uwr_get_http_local_port(ctx: *const luw_ctx_t) -> &'static str;
+pub unsafe fn uwr_get_http_local_port(ctx: *const luw_ctx_t) -> &'static str;
 ```
 
 This function returns a pointer to the local/server port.
@@ -637,7 +637,7 @@ E.g
 ### uwr_get_http_server_name
 
 ```Rust
-pub fn uwr_get_http_server_name(ctx: *const luw_ctx_t) -> &'static str;
+pub unsafe fn uwr_get_http_server_name(ctx: *const luw_ctx_t) -> &'static str;
 ```
 
 This function returns a pointer to the local/server name.
@@ -651,7 +651,7 @@ www.example.com
 ### uwr_get_http_content
 
 ```Rust
-pub fn uwr_get_http_content(ctx: *const luw_ctx_t) -> *const u8;
+pub unsafe fn uwr_get_http_content(ctx: *const luw_ctx_t) -> *const u8;
 ```
 
 This function returns a pointer to the start of the request body.
@@ -659,7 +659,7 @@ This function returns a pointer to the start of the request body.
 ### uwr_get_http_content_str
 
 ```Rsut
-pub fn uwr_get_http_content_str(ctx: *const luw_ctx_t) -> &'static str;
+pub unsafe fn uwr_get_http_content_str(ctx: *const luw_ctx_t) -> &'static str;
 ```
 
 Same as above but returns a Rust str.
@@ -669,7 +669,7 @@ _Version: 0.2.0_
 ### uwr_get_http_content_len
 
 ```Rust
-pub fn uwr_get_http_content_len(ctx: *const luw_ctx_t) -> u64;
+pub unsafe fn uwr_get_http_content_len(ctx: *const luw_ctx_t) -> u64;
 ```
 
 This function returns the size of the overall content. I.e Content-Length.
@@ -679,7 +679,7 @@ Prior to version 0.3.0 it returned a usize
 ### uwr_get_http_content_sent
 
 ```Rust
-pub fn uwr_get_http_content_sent(ctx: *const luw_ctx_t) -> usize;
+pub unsafe fn uwr_get_http_content_sent(ctx: *const luw_ctx_t) -> usize;
 ```
 
 This function returns the length of the content that was sent to the
@@ -689,7 +689,7 @@ split over several calls to luw_request_handler().
 ### uwr_get_http_total_content_sent
 
 ```Rust
-pub fn uwr_get_http_total_content_sent(ctx: *const luw_ctx_t) -> u64;
+pub unsafe fn uwr_get_http_total_content_sent(ctx: *const luw_ctx_t) -> u64;
 ```
 
 This function returns the total length of the content that was sent to the
@@ -701,7 +701,7 @@ _Version: 0.2.0_ Prior to 0.3.0 it returned a usize
 ### uwr_http_is_tls
 
 ```Rust
-pub fn uwr_http_is_tls(ctx: *const luw_ctx_t) -> bool;
+pub unsafe fn uwr_http_is_tls(ctx: *const luw_ctx_t) -> bool;
 ```
 
 This function returns _true_ if the connection to Unit was made over TLS.
@@ -709,7 +709,7 @@ This function returns _true_ if the connection to Unit was made over TLS.
 ### uwr_http_hdr_iter
 
 ```Rust
-pub fn uwr_http_hdr_iter(
+pub unsafe fn uwr_http_hdr_iter(
     ctx: *mut luw_ctx_t,
     luw_http_hdr_iter_func: ::std::option::Option<
         unsafe extern "C" fn(
@@ -764,7 +764,10 @@ uwr_http_hdr_iter(ctx, Some(hdr_iter_func), null_mut());
 ### uwr_http_hdr_get_value
 
 ```Rust
-pub fn uwr_http_hdr_get_value(ctx: *const luw_ctx_t, hdr: &str) -> &'static str;
+pub unsafe fn uwr_http_hdr_get_value(
+    ctx: *const luw_ctx_t,
+    hdr: &str,
+) -> &'static str;
 ```
 
 Given a HTTP header _hdr_ this function will look it up in the request and
@@ -783,7 +786,7 @@ This function returns the size of the response data written to memory.
 ### uwr_mem_write_buf
 
 ```Rust
-pub fn uwr_mem_write_buf(
+pub unsafe fn uwr_mem_write_buf(
     ctx: *mut luw_ctx_t,
     src: *const u8,
     size: usize,
@@ -797,7 +800,7 @@ It returns the new size of the response.
 ### uwr_req_buf_append
 
 ```Rust
-pub fn uwr_req_buf_append(ctx: *mut luw_ctx_t, src: *const u8);
+pub unsafe fn uwr_req_buf_append(ctx: *mut luw_ctx_t, src: *const u8);
 ```
 
 This function appends the request data contained in _src_ to the previously
@@ -842,7 +845,7 @@ pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
 ### uwr_req_buf_copy
 
 ```Rust
-pub fn uwr_req_buf_copy(ctx: *mut luw_ctx_t, src: *const u8);
+pub unsafe fn uwr_req_buf_copy(ctx: *mut luw_ctx_t, src: *const u8);
 ```
 
 This function is analogous to [uwr_req_buf_append](#uwr_req_buf_append) but
@@ -856,7 +859,7 @@ save out to disk or some such and can't buffer it all in memory.
 ### uwr_mem_splice_file
 
 ```Rust
-pub fn uwr_mem_splice_file(src: *const u8, f: &mut File) -> isize;
+pub unsafe fn uwr_mem_splice_file(src: *const u8, f: &mut File) -> isize;
 ```
 This function write(2)'s the request data directly from the shared memory
 (_src_) to the file represented by the given _File_ object (_f_).
@@ -906,7 +909,7 @@ pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
 ### uwr_mem_fill_buf_from_req
 
 ```Rust
-pub fn uwr_req_buf_append(ctx: *mut luw_ctx_t, src: *const u8);
+pub unsafe fn uwr_req_buf_append(ctx: *mut luw_ctx_t, src: *const u8);
 ```
 
 This is a convenience function to fill the response buffer with data from
@@ -941,7 +944,7 @@ This function returns the number of bytes written to the response buffer.
 ### uwr_mem_reset
 
 ```Rust
-pub fn uwr_luw_mem_reset(ctx: *mut luw_ctx_t);
+pub unsafe fn uwr_luw_mem_reset(ctx: *mut luw_ctx_t);
 ```
 
 This function resets the response buffer size and the number of response
@@ -950,7 +953,7 @@ headers back to 0.
 ### uwr_http_set_response_status
 
 ```Rust
-pub fn uwr_http_set_response_status(status: luw_http_status_t);
+pub unsafe fn uwr_http_set_response_status(status: luw_http_status_t);
 ```
 
 This function is used to set the HTTP response status. It takes one of the
@@ -997,7 +1000,7 @@ _Version: 0.3.0_
 ### uwr_http_send_response
 
 ```Rust
-pub fn uwr_http_send_response(ctx: *const luw_ctx_t);
+pub unsafe fn uwr_http_send_response(ctx: *const luw_ctx_t);
 ```
 
 This function calls into Unit to send the response buffer back.
@@ -1005,7 +1008,11 @@ This function calls into Unit to send the response buffer back.
 ### uwr_http_init_headers
 
 ```Rust
-pub fn uwr_http_init_headers(ctx: *mut luw_ctx_t, nr: usize, offset: usize);
+pub unsafe fn uwr_http_init_headers(
+    ctx: *mut luw_ctx_t,
+    nr: usize,
+    offset: usize,
+);
 ```
 
 This function is used in the preparation of sending back response headers.
@@ -1024,7 +1031,7 @@ uwr_http_init_headers(ctx, 2, 0);
 ### uwr_http_add_header
 
 ```Rust
-pub fn uwr_http_add_header(
+pub unsafe fn uwr_http_add_header(
     ctx: *mut luw_ctx_t,
     name: &str,
     value: &str,
@@ -1051,7 +1058,10 @@ uwr_http_add_header(
 ### uwr_http_add_header_content_type
 
 ```Rust
-pub fn uwr_http_add_header_content_type(ctx: *mut luw_ctx_t, ctype: &str);
+pub unsafe fn uwr_http_add_header_content_type(
+    ctx: *mut luw_ctx_t,
+    ctype: &str,
+);
 ```
 
 A convenience function for setting the 'Content-Type' response header.
@@ -1067,7 +1077,7 @@ _Version: 0.2.0_
 ### uwr_http_add_header_content_len
 
 ```Rust
-pub fn uwr_http_add_header_content_len(ctx: *mut luw_ctx_t);
+pub unsafe fn uwr_http_add_header_content_len(ctx: *mut luw_ctx_t);
 ```
 
 A convenience function for setting the 'Content-Length' response header.
@@ -1086,7 +1096,7 @@ _Version: 0.2.0_
 ### uwr_http_send_headers
 
 ```Rust
-pub fn uwr_http_send_headers(ctx: *const luw_ctx_t);
+pub unsafe fn uwr_http_send_headers(ctx: *const luw_ctx_t);
 ```
 
 This function calls into Unit and triggers the sending of the response
@@ -1095,7 +1105,7 @@ headers.
 ### uwr_http_response_end
 
 ```Rust
-pub fn uwr_http_response_end();
+pub unsafe fn uwr_http_response_end();
 ```
 
 This function calls into Unit and tells it this is the end of the response
@@ -1104,7 +1114,7 @@ which will trigger Unit to send it to the client.
 ### uwr_mem_get_init_size
 
 ```Rust
-pub fn uwr_mem_get_init_size() -> u32;
+pub unsafe fn uwr_mem_get_init_size() -> u32;
 ```
 
 This function calls into Unit to get the size of the shared memory. This is
@@ -1120,7 +1130,7 @@ should **not** be used directly.
 ### uwr_malloc
 
 ```Rust
-pub fn uwr_malloc(size: u32) -> *mut u8;
+pub unsafe fn uwr_malloc(size: u32) -> *mut u8;
 ```
 
 Essentially a straight wrapper for malloc(3).
@@ -1128,7 +1138,7 @@ Essentially a straight wrapper for malloc(3).
 ### uwr_free
 
 ```Rust
-pub fn uwr_free(ptr: *mut u8);
+pub unsafe fn uwr_free(ptr: *mut u8);
 ```
 
 Essentially a straight wrapper for free(3).
