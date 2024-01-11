@@ -45,9 +45,9 @@ case showing the expected behavior that doesn't occur.
 ### Suggest an Enhancement
 
 To suggest an enhancement, open an
-[issue](https://github.com/nginx/unit/issues/new) on GitHub with the label
-`enhancement`.  Please do this before implementing a new feature to discuss
-the feature first.
+[issue](https://github.com/nginx/unit-wasm/issues/new) on GitHub with the
+label `enhancement`.  Please do this before implementing a new feature to
+discuss the feature first.
 
 
 ### Open a Pull Request
