@@ -102,6 +102,14 @@ And finally similarly as Fedora (this requires a recentish clang)
 # wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/libclang_rt.builtins-wasm32-wasi-20.0.tar.gz | tar --strip-components=1 -xvzf - -C $(dirname $(clang -print-runtime-dir))
 ```
 
+### FreeBSD
+
+Install the following as normal
+
+```
+# pkg install gmake llvm13 rust wasi-compiler-rt13 wasi-libc
+```
+
 ## Quickstart in Developing Rust WebAssembly Modules for Unit
 
 1) Setup a suitable build environment as above.
