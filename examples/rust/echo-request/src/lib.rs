@@ -11,7 +11,7 @@ use unit_wasm::rusty::*;
 use std::ffi::CStr;
 use std::os::raw::c_char;
 use std::os::raw::c_void;
-use std::ptr::null_mut;
+use std::ptr::{addr_of_mut, null_mut};
 
 // Buffer of some size to store the copy of the request
 static mut REQUEST_BUF: *mut u8 = null_mut();
@@ -51,7 +51,7 @@ pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
     uwr_init_ctx(ctx, addr, 4096);
 
     // Set where we will copy the request into
-    uwr_set_req_buf(ctx, unsafe { &mut REQUEST_BUF }, LUW_SRB_NONE);
+    uwr_set_req_buf(ctx, unsafe { addr_of_mut!(REQUEST_BUF) }, LUW_SRB_NONE);
 
     // Define the Response Body Text.
 

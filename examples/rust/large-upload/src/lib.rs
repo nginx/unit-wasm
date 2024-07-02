@@ -9,7 +9,7 @@
 use unit_wasm::rusty::*;
 
 use std::fs::File;
-use std::ptr::null_mut;
+use std::ptr::{addr_of_mut, null_mut};
 
 static mut CTX: luw_ctx_t = UWR_CTX_INITIALIZER();
 static mut REQUEST_BUF: *mut u8 = null_mut();
@@ -32,14 +32,18 @@ pub unsafe extern "C" fn uwr_response_end_handler() {
 
 #[no_mangle]
 pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
-    let ctx: *mut luw_ctx_t = unsafe { &mut CTX };
+    let ctx: *mut luw_ctx_t = unsafe { addr_of_mut!(CTX) };
     let mut f;
     let bytes_wrote: isize;
     let mut total = unsafe { TOTAL_BYTES_WROTE };
 
     if total == 0 {
         uwr_init_ctx(ctx, addr, 0);
-        uwr_set_req_buf(ctx, unsafe { &mut REQUEST_BUF }, LUW_SRB_NONE);
+        uwr_set_req_buf(
+            ctx,
+            unsafe { addr_of_mut!(REQUEST_BUF) },
+            LUW_SRB_NONE,
+        );
 
         f = File::create("/var/tmp/large-file.dat").unwrap();
     } else {
