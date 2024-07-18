@@ -1,3 +1,22 @@
+**NOTE: You may wish to checkout the wasm-wasi-component language module
+        instead.**
+
+This is an SDK for the Unit wasm language module which only supports
+WebAssembly modules. If you wish to run wasi-http/proxy components then you
+should have a look at the
+[wasm-wasi-component](https://unit.nginx.org/configuration/#unit-wasm-wasm-wasi-component)
+language module instead.
+
+However there are some caveats with wasm-wasi-component.
+
+* First and foremost this language module is written in rust and thus requires
+  the rust ecosystem if building from source which can be heavy on resources.
+
+* It can use significantly more memory than the original wasm module.
+
+* It can't ingress or egress more than about 4GiB of data.
+
+
 # C & Rust Library & Examples for Building WebAssembly Modules for NGINX Unit
 
 This provides a C library (lbunit-wasm) and Rust crates based on that library
