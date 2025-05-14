@@ -32,7 +32,7 @@ pub unsafe extern "C" fn uwr_response_end_handler() {
 
 #[no_mangle]
 pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
-    let ctx: *mut luw_ctx_t = unsafe { addr_of_mut!(CTX) };
+    let ctx: *mut luw_ctx_t = addr_of_mut!(CTX);
     let mut f;
     let bytes_wrote: isize;
     let mut total = unsafe { TOTAL_BYTES_WROTE };
@@ -41,7 +41,7 @@ pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
         uwr_init_ctx(ctx, addr, 0);
         uwr_set_req_buf(
             ctx,
-            unsafe { addr_of_mut!(REQUEST_BUF) },
+            addr_of_mut!(REQUEST_BUF),
             LUW_SRB_NONE,
         );
 

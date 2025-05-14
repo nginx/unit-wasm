@@ -72,7 +72,7 @@ pub fn upload_reflector(ctx: *mut luw_ctx_t) -> i32 {
 
 #[no_mangle]
 pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
-    let ctx: *mut luw_ctx_t = unsafe { addr_of_mut!(CTX) };
+    let ctx: *mut luw_ctx_t = addr_of_mut!(CTX);
 
     if unsafe { REQUEST_BUF.is_null() } {
         uwr_init_ctx(ctx, addr, 0 /* Response offset */);
@@ -87,7 +87,7 @@ pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
          */
         uwr_set_req_buf(
             ctx,
-            unsafe { addr_of_mut!(REQUEST_BUF) },
+            addr_of_mut!(REQUEST_BUF),
             LUW_SRB_APPEND | LUW_SRB_ALLOC | LUW_SRB_FULL_SIZE,
         );
     } else {

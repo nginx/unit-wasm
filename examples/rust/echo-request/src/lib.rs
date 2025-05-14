@@ -51,7 +51,7 @@ pub extern "C" fn uwr_request_handler(addr: *mut u8) -> i32 {
     uwr_init_ctx(ctx, addr, 4096);
 
     // Set where we will copy the request into
-    uwr_set_req_buf(ctx, unsafe { addr_of_mut!(REQUEST_BUF) }, LUW_SRB_NONE);
+    uwr_set_req_buf(ctx, addr_of_mut!(REQUEST_BUF), LUW_SRB_NONE);
 
     // Define the Response Body Text.
 
