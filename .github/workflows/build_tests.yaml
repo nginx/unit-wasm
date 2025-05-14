@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: Install tools/deps
         run: |
-          dnf -y install git wget clang llvm compiler-rt lld make wasi-libc-devel cargo rust rust-std-static-wasm32-unknown-unknown rust-std-static-wasm32-wasi
+          dnf -y install git wget clang llvm compiler-rt lld make wasi-libc-devel cargo rust rust-std-static-wasm32-wasip1
           wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/libclang_rt.builtins-wasm32-wasi-20.0.tar.gz | tar --strip-components=1 -xvzf - -C $(dirname $(clang -print-runtime-dir))
 
       - uses: actions/checkout@v3
@@ -55,7 +55,7 @@ jobs:
           wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/libclang_rt.builtins-wasm32-wasi-20.0.tar.gz | tar --strip-components=1 -xvzf - -C $(dirname $(clang -print-runtime-dir))
           curl https://sh.rustup.rs -sSf | sh -s -- -y
           . "$HOME/.cargo/env"
-          rustup target add wasm32-wasi
+          rustup target add wasm32-wasip1
           wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/wasi-sysroot-20.0.tar.gz | tar -xzf - -C ${RUNNER_TEMP}
 
       - uses: actions/checkout@v3

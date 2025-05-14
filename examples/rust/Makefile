@@ -1,5 +1,8 @@
 include ../../shared.mk
 
+TARGET    = wasm32-wasip1
+CARGO_CMD = cargo build --target=$(TARGET)
+
 SDIR = examples/rust
 
 examples: rust-echo-request \
@@ -8,20 +11,20 @@ examples: rust-echo-request \
 	  rust-large-upload
 
 rust-echo-request: echo-request/Cargo.toml echo-request/src/lib.rs
-	$(PP_GEN) $(SDIR)/echo-request/target/wasm32-wasi/
-	$(v)cd echo-request; cargo build --target=wasm32-wasi
+	$(PP_GEN) $(SDIR)/echo-request/target/$(TARGET)/
+	$(v)cd echo-request; $(CARGO_CMD)
 
 rust-upload-reflector: upload-reflector/Cargo.toml upload-reflector/src/lib.rs
-	$(PP_GEN) $(SDIR)/upload-reflector/target/wasm32-wasi/
-	$(v)cd upload-reflector; cargo build --target=wasm32-wasi
+	$(PP_GEN) $(SDIR)/upload-reflector/target/$(TARGET)/
+	$(v)cd upload-reflector; $(CARGO_CMD)
 
 rust-hello-world: hello-world/Cargo.toml hello-world/src/lib.rs
-	$(PP_GEN) $(SDIR)/hello-world/target/wasm32-wasi/
-	$(v)cd hello-world; cargo build --target=wasm32-wasi
+	$(PP_GEN) $(SDIR)/hello-world/target/$(TARGET)/
+	$(v)cd hello-world; $(CARGO_CMD)
 
 rust-large-upload: large-upload/Cargo.toml large-upload/src/lib.rs
-	$(PP_GEN) $(SDIR)/large-upload/target/wasm32-wasi/
-	$(v)cd large-upload; cargo build --target=wasm32-wasi
+	$(PP_GEN) $(SDIR)/large-upload/target/$(TARGET)/
+	$(v)cd large-upload; $(CARGO_CMD)
 
 clean:
 	rm -f */Cargo.lock

@@ -9,7 +9,7 @@ cargo add unit-wasm
 
 ## Prerequisites
 
-- target add wasm32-wasi. `rustup target add wasm32-wasi`
+- target add wasm32-wasip1. `rustup target add wasm32-wasip1`
 
 ## From Source
 
