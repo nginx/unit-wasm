@@ -32,7 +32,8 @@ jobs:
       - name: Install tools/deps
         run: |
           dnf -y install git wget clang llvm compiler-rt lld make wasi-libc-devel cargo rust rust-std-static-wasm32-wasip1
-          wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/libclang_rt.builtins-wasm32-wasi-20.0.tar.gz | tar --strip-components=1 -xvzf - -C $(dirname $(clang -print-runtime-dir))
+          mkdir $(dirname $(clang -print-runtime-dir))/wasi
+          wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-25/libclang_rt.builtins-wasm32-wasi-25.0.tar.gz | tar --strip-components=1 -xvzf - -C $(dirname $(clang -print-runtime-dir))/wasi
 
       - uses: actions/checkout@v3
         with:
@@ -52,11 +53,12 @@ jobs:
         run: |
           apt-get -y update
           apt-get -y install git curl wget wasi-libc make clang llvm lld
-          wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/libclang_rt.builtins-wasm32-wasi-20.0.tar.gz | tar --strip-components=1 -xvzf - -C $(dirname $(clang -print-runtime-dir))
+          mkdir $(dirname $(clang -print-runtime-dir))/wasi
+          wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-25/libclang_rt.builtins-wasm32-wasi-25.0.tar.gz | tar --strip-components=1 -xvzf - -C $(dirname $(clang -print-runtime-dir))/wasi
           curl https://sh.rustup.rs -sSf | sh -s -- -y
           . "$HOME/.cargo/env"
           rustup target add wasm32-wasip1
-          wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/wasi-sysroot-20.0.tar.gz | tar -xzf - -C ${RUNNER_TEMP}
+          wget -O- https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-25/wasi-sysroot-25.0.tar.gz | tar -xzf - -C ${RUNNER_TEMP}
 
       - uses: actions/checkout@v3
         with:
@@ -65,4 +67,4 @@ jobs:
       - name: make
         run: |
           . "$HOME/.cargo/env"
-          make WASI_SYSROOT=${RUNNER_TEMP}/wasi-sysroot V=1 E=1 all
+          make WASI_SYSROOT=${RUNNER_TEMP}/wasi-sysroot-25.0 V=1 E=1 all
