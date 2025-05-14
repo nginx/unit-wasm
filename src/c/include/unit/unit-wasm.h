@@ -17,7 +17,7 @@ extern "C" {
 #endif
 
 #define LUW_VERSION_MAJOR	0
-#define LUW_VERSION_MINOR	3
+#define LUW_VERSION_MINOR	4
 #define LUW_VERSION_PATCH	0
 
 /* Version number in hex 0xMMmmpp00 */
