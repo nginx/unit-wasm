@@ -10,8 +10,6 @@ else ifneq ("$(wildcard /usr/local/share/wasi-sysroot)", "")
         WASI_SYSROOT ?= /usr/local/share/wasi-sysroot
 endif
 
-export WASI_SYSROOT
-
 # By default compiler etc output is hidden, use
 #   make V=1 ...
 # to show it
