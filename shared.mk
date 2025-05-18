@@ -41,7 +41,7 @@ PP_AR		= @echo '  AR    '
 PP_CCLNK	= @echo '  CCLNK '
 PP_GEN		= @echo '  GEN   '
 
-CC       = clang
+CC      ?= clang
 CFLAGS  += -Wall -Wextra -Wdeclaration-after-statement -Wvla \
            -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition \
            -Wimplicit-function-declaration -Wimplicit-int -Wint-conversion \
