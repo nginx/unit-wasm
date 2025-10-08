@@ -1,3 +1,10 @@
+.. image:: https://www.repostatus.org/badges/latest/unsupported.svg
+   :alt: Project Status: Unsupported – The project has reached a stable, usable state but the author(s) have ceased all work on it. A new maintainer may be desired.
+   :target: https://www.repostatus.org/#unsupported
+
+Note: This repository has been archived. There will likely be no further development at this repo, and security vulnerabilities may be unaddressed. It may be forked and cotinue as per the license requirements.
+=========================================
+
 Contributing Guidelines
 =======================
 
